@@ -1,0 +1,45 @@
+{
+  "name": "skinrobot",
+  "version": "1.0.0",
+  "description": "It's wrapp platform service for robot trading strategies",
+  "main": "main.js",
+  "scripts": {
+    "bash-backfill": "./scripts/backfill.sh",
+    "backfill-candles": "node main.js backfill_candles -e binance_futures -s BTCUSDT -p 1d -d 1",
+    "backfill-tickers": "node main.js backfill_tickers -h 23",
+    "backtesting": "node main.js backtesting -d 2021-07-16 24 26 -c 0.02 0.2 -g 0.1 0.8 -tp 0.05 -p 3000 -l 100",
+    "server": "nodemon main.js server -ws on",
+    "trade": "node main.js trade -ws on",
+    "watch": "node main.js watch -ws on",
+    "start": "pm2 start pm2_config/config.json",
+    "start-docker": "pm2-docker start pm2_config/config.json",
+    "test": "jest"
+  },
+  "author": "Yaroslav Pavliuk",
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^26.6.3",
+    "nodemon": "^2.0.6"
+  },
+  "dependencies": {
+    "basic-auth": "^2.0.1",
+    "better-sqlite3": "^7.1.2",
+    "binance-api-node": "^0.10.19",
+    "bitfinex-api-node": "^4.0.16",
+    "bitmex-realtime-api": "^0.5.0",
+    "ccxt": "^1.52.5",
+    "commander": "^6.2.1",
+    "compression": "^1.7.4",
+    "cookie-parser": "^1.4.5",
+    "express": "^4.17.1",
+    "json2csv": "^5.0.6",
+    "lodash": "^4.17.20",
+    "moment": "^2.29.1",
+    "node-fetch": "^2.6.1",
+    "querystring": "^0.2.0",
+    "queue-promise": "^2.1.0",
+    "twig": "^1.15.4",
+    "winston": "^3.3.3",
+    "winston-transport": "^4.4.0"
+  }
+}

@@ -1,0 +1,131 @@
+{% extends './layout.html.twig' %}
+
+{% block title %}Changes | Crypto Bot{% endblock %}
+
+{% block stylesheet %}
+    <!-- Multiplay select -->
+    <link rel="stylesheet" href="{{ '/plugins/chosen_v1/chosen.min.css' }}">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+{% endblock stylesheet %}
+
+{% block content %}
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper" id="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>Changes</h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="{{ '/' }}">Dashboard</a></li>
+                            <li class="breadcrumb-item active">Changes</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+            <!-- /.container-fluid -->
+        </section>
+        <!-- /.Content Header (Page header) -->
+
+        <!-- Main content -->
+        <div class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <strong>Filters</strong>
+                                <form action="/changes.json" role="form" id="filter-form">
+                                    <ul class="list-inline">
+                                        <li class="list-inline-item">Count:</li>
+                                        <li class="list-inline-item">
+                                            <div class="form-check">
+                                                <input type="radio" class="form-check-input" name="count" value="10" id="count_10" checked>
+                                                <label class="form-check-label" for="count_10">10</label>
+                                            </div>
+                                        </li>
+                                        <li class="list-inline-item">
+                                            <div class="form-check">
+                                                <input type="radio" class="form-check-input" name="count" value="50" id="count_50">
+                                                <label class="form-check-label" for="count_10">50</label>
+                                            </div>
+                                        </li>
+                                        <li class="list-inline-item">
+                                            <div class="form-check">
+                                                <input type="radio" class="form-check-input" name="count" value="100" id="count_100">
+                                                <label class="form-check-label" for="count_10">100</label>
+                                            </div>
+                                        </li>
+                                        <li class="list-inline-item">Period:</li>
+                                        <li class="list-inline-item">
+                                            <div class="form-check">
+                                                <input type="radio" class="form-check-input" name="period" value="5m" id="period_5m">
+                                                <label class="form-check-label" for="period_5m">5m</label>
+                                            </div>
+                                        </li>
+                                        <li class="list-inline-item">
+                                            <div class="form-check">
+                                                <input type="radio" class="form-check-input" name="period" value="1d" id="period_1d" checked>
+                                                <label class="form-check-label" for="period_1d">1d</label>
+                                            </div>
+                                        </li>
+                                        {# <li class="list-inline-item">Market:</li>
+                                        <select id="market_type" name="market_type">
+                                            <option value="usdt" selected>USDT</option>
+                                            <option value="btc">BTC</option>
+                                            <option value="eth">ETH</option>
+                                        </select> #}
+                                        <li class="list-inline-item">Date:</li>
+                                        <li class="list-inline-item">
+                                            <div class="form-group p-0">
+                                                <input class="pb-1" type="text" name="datepicker" value="" />
+                                            </div>
+                                        </li>
+                                        <li class="list-inline-item">Exchange:</li>
+                                        <select id="pairs" data-placeholder="Choose a pairs" name="pairs" multiple style="width: 400px;">
+                                            {% for ticker in tickers %}
+                                                <option value={{ ticker }}>{{ ticker }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <button type="submit" class="btn btn-default btn-sm">Submit</button>
+                                    </ul>
+                                </form>
+                            </div>
+                            <!-- /.card-header -->
+
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-10">
+                                        <div class="table-responsive p-2">
+                                            <table class="table table-bordered table-sm text-center">
+                                                <thead id="table-filter-head"></thead>
+                                                <tbody id="table-filter-body"></tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 ">
+                                        <p class="mb-1">binance_future_btcusdt/binance_btcusdt: <b>1,02</b></p>
+                                        <p class="mb-1">binance_future_btcusdt/binance_btcusdt: <b>1,02</b></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /.card-body -->
+                        </div>
+                    </div>
+                </div>
+                <!-- /.row -->
+            </div><!-- /.container-fluid -->
+        </div>
+        <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+{% endblock %}
+
+{% block javascript %}
+    <script src="/plugins/chosen_v1/chosen.jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <script src="/js/changes.js?v={{ asset_version() }}"></script>
+{% endblock %}

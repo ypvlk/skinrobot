@@ -1,0 +1,40 @@
+{
+  "apps" : [
+    {
+      "name"        : "hf-worker",
+      "script"      : "./main.js",
+      "exec_mode"   : "cluster",
+      "interpreter_args": "--max-old-space-size=512", 
+      "instances" : 1,
+      "watch"     : true,
+      "merge_logs" :true,
+      "ignore_watch": ["routers/media/users/", "node_modules", "logs/error.log", "logs/fatal.log", "logs/info.log", "logs/info-pm2.log", "logs"],
+      "max_memory_restart": "1024M",
+      "pid_file"   : "logs/info-pm2.log",
+      "env": {
+        "MONITORING": false
+      }
+    },
+    {
+      "name": "BotFollowPosts",
+      "script": "service/cron/cronActions/RunBotFollowPost.js",
+      "instances": 1,
+      "exec_mode": "fork",
+      "cron_restart": "0 */12 * * *",
+      "watch": false,
+      "autorestart": false,
+      "max_memory_restart": "100M"
+    },
+    {
+      "name": "BotViewPosts",
+      "script": "service/cron/cronActions/RunBotViewPosts.js",
+      "instances": 1,
+      "exec_mode": "fork",
+      "cron_restart": "*/25 * * * *",
+      "watch": false,
+      "autorestart": false,
+      "max_memory_restart": "100M"
+    }
+  ]
+}
+  

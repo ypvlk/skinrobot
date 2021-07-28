@@ -1,0 +1,19 @@
+{
+    "apps" : [
+        {
+        "name"        : "skinrobot-worker",
+        "script"      : "./main.js",
+        "exec_mode"   : "cluster",
+        "interpreter_args": "--max-old-space-size=512", 
+        "instances" : 1,
+        "watch"     : true,
+        "merge_logs" :true,
+        "ignore_watch": ["node_modules", "logs/", "var/backtesting/"],
+        "max_memory_restart": "512M",
+        "pid_file"   : "logs/info-pm2.log",
+        "env": {
+            "NODE_ENV": "production"
+        }
+    }
+    ]
+}
