@@ -192,7 +192,7 @@ module.exports = class Http {
             } catch (err) {
                 //file is NOT exists
                 //We must to create it
-                //TODO
+                //TODOo
             }
 
             res.download(file, filename, function (err) {
