@@ -11,6 +11,7 @@
 #
 /node_modules
 /var/backtesting/*.csv
+/var/tickers/*.csv
 /src/modules/strategy/strategies/**
 !/src/modules/strategy/strategies/redme.txt
 

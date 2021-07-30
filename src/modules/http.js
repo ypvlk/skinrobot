@@ -6,6 +6,7 @@ const crypto = require('crypto');
 const cookieParser = require('cookie-parser');
 const moment = require('moment');
 const os = require('os');
+const fs = require('fs');
 
 module.exports = class Http {
     constructor(
@@ -156,7 +157,7 @@ module.exports = class Http {
         });
 
         //query: ?first_pair="bitmex.BTCUSDT"&second_pair="binance.BTCUSDT"
-        app.get('/ticker', async (req, res) => {
+        app.get('/tickers', async (req, res) => {
             const tickers = {};
         
             if (req.query.first_pair && req.query.second_pair) {
@@ -172,6 +173,31 @@ module.exports = class Http {
             };
             // console.log('options', options);
             res.render('../templates/ticker.html.twig', options)
+        });
+
+        app.get('/tickers/download', async (req, res) => {
+            //localhost:3000/tickers/download?date=
+            const {
+                date,
+            } = req.query;
+
+            if (!date) res.status(400).end('Error: date query params is allowed');
+
+            const filename = `${date}_tickers.csv`;
+            const file = `${this.projectDir}/var/tickers/${filename}`;
+
+            try {
+                fs.accessSync(file, fs.constants.F_OK);
+                //file exists
+            } catch (err) {
+                //file is NOT exists
+                //We must to create it
+                
+            }
+
+            res.download(file, filename, function (err) {
+                if (err) res.status(400).end(`Error: ${String(err)}`);
+            })
         });
 
         app.get('/changes', async (req, res) => {
