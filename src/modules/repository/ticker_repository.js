@@ -94,17 +94,18 @@ module.exports = class TickerRepository {
         });
     }
 
-    getMultipleTickers(pairs, period, limit, time) {
+    getMultipleTickers(pairs, period, startTime, endTime, limit = 1000) {
         return new Promise(resolve => {
             const parameters = {
                 limit: limit,
-                time: time,
-                period: period
+                period: period,
+                start: startTime,
+                end: endTime
             };
             
             const sql = `SELECT * FROM tickers WHERE (exchange, symbol) IN (VALUES ${pairs
                 .map(pair => `($exchange_${pair.exchange}, $symbol_${pair.symbol})`)
-                .join(', ')}) AND period=$period AND income_at > $time ORDER BY income_at ASC LIMIT $limit`
+                .join(', ')}) AND period=$period AND income_at >= $start AND income_at <= $end ORDER BY income_at ASC LIMIT $limit`
 
             pairs.forEach(pair => {
                 parameters[`exchange_${pair.exchange}`] = pair.exchange;

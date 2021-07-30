@@ -15,6 +15,7 @@ module.exports = class Http {
         candleExportHttp,
         tickerExportHttp,
         csvExportHttp,
+        instances,
         projectDir
     ) {
         this.systemUtil = systemUtil;
@@ -22,6 +23,7 @@ module.exports = class Http {
         this.candleExportHttp = candleExportHttp;
         this.tickerExportHttp = tickerExportHttp;
         this.csvExportHttp = csvExportHttp;
+        this.instances = instances;
         this.projectDir = projectDir;
     }
 
@@ -176,15 +178,22 @@ module.exports = class Http {
         });
 
         app.get('/tickers/download', async (req, res) => {
-            //localhost:3000/tickers/download?date=
+            //localhost:3000/tickers/download?date=2021-07-16&period=3000&limit=1000
             const {
                 date,
+                period,
+                limit
             } = req.query;
 
-            if (!date) res.status(400).end('Error: date query params is allowed');
+            if (!date || !period || !limit) res.status(400).end('Error: date query params is allowed');
 
-            const filename = `${date}_tickers.csv`;
-            const file = `${this.projectDir}/var/tickers/${filename}`;
+            const pairs = this.instances.symbols.map(pair => ({
+                exchange: pair.exchange,
+                symbol: pair.symbol
+            }));
+
+            const filename = `${date}_${pairs.map(pair => `${pair.symbol}`).join('_')}_tickers`
+            const file = `${this.projectDir}/var/tickers/${filename}.csv`;
 
             try {
                 fs.accessSync(file, fs.constants.F_OK);
@@ -192,7 +201,7 @@ module.exports = class Http {
             } catch (err) {
                 //file is NOT exists
                 //We must to create it
-                //TODOo
+                await this.csvExportHttp.saveTickersTableIntoFile(pairs, period, date, file, limit);
             }
 
             res.download(file, filename, function (err) {

@@ -1,7 +1,5 @@
 const _ = require('lodash');
 const moment = require('moment');
-const fs = require('fs');
-const { Parser } = require('json2csv');
 
 const Ticker = require('../../dict/ticker');
 
@@ -14,6 +12,7 @@ module.exports = class TickersStreamService {
         tickerExportHttp,
         tickers,
         backtestingStorage,
+        csvExportHttp,
         projectDir
     ) {
         this.eventEmitter = eventEmitter;
@@ -23,6 +22,7 @@ module.exports = class TickersStreamService {
         this.tickerExportHttp = tickerExportHttp;
         this.tickers = tickers;
         this.backtestingStorage = backtestingStorage;
+        this.csvExportHttp = csvExportHttp;
         this.projectDir = projectDir;
 
         this.dataFromMonitoring = {};
@@ -49,7 +49,7 @@ module.exports = class TickersStreamService {
                 symbol: pair.symbol
             }));
 
-            const limit = options.limit ? +options.limit : 10;
+            const limit = options.limit ? +options.limit : 1000;
             const period = options.period ? +options.period : 3000;
 
             const date = new Date(options.date) / 1;
@@ -66,7 +66,7 @@ module.exports = class TickersStreamService {
                 do {
                     if (startTime > endTime) break;
                     
-                    tickersFromDB = await me.tickerExportHttp.getMultipleTickers(pairs, period, limit, startTime);
+                    tickersFromDB = await me.tickerExportHttp.getMultipleTickers(pairs, period, startTime, endTime, limit);
                     
                     if (tickersFromDB && tickersFromDB.length > pairs.length / 2) {
                         let j = 0;
@@ -130,8 +130,11 @@ module.exports = class TickersStreamService {
             }
 
             const filename = `${pairs[0].symbol}_${pairs[1].symbol}`;
+            const today = new Date().toISOString().slice(0, 10);
+            const fields = Object.keys(me.dataFromMonitoring);
+            const path = `${me.projectDir}/var/backtesting/${filename}_${today}.csv`;
 
-            this.saveDataIntoFile(_files, filename);
+            me.csvExportHttp.saveSyncIntoFile(_files, path, fields);
 
             console.log(`Tickers stream service stoped.`);
 
@@ -141,26 +144,7 @@ module.exports = class TickersStreamService {
 
         }, me.systemUtil.getConfig('settings.warmup_time', 30000));
     }
-
-    saveDataIntoFile(data, fileName) {
-        console.log('Saving data into file...');
-
-        const fields = Object.keys(this.dataFromMonitoring);
-        // const fields = ['pairs', 'correction', 'get_pos', 'take_profit', 'all_pos', 'plus_pos', 'nega_pos', 'drawdown', 'bal', 'bal_comm'];
-        const csvParser = new Parser({ fields });
-        const csv = csvParser.parse(data); //[это массив обьектов]
-
-        fs.writeFileSync(
-            `${this.projectDir}/var/backtesting/${fileName}_${new Date() / 1}.csv`, 
-            csv, 
-            function(err) {
-                if (err) throw new Error(`Write file error: ${String(err)}`);
-            }
-        );
-
-        console.log(`File ${fileName}.csv saved.`);
-    }
-
+    
     parseOptions(options) {
         //https://stackoverflow.com/questions/3895478/does-javascript-have-a-method-like-range-to-generate-a-range-within-the-supp
 

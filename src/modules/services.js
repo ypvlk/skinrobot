@@ -265,7 +265,10 @@ module.exports = {
     return (csvExportHttp = new CsvExportHttp(
       this.getCandlestickRepository(),
       this.getMeanReversionRepository(),
-      this.getSignalRepository()
+      this.getSignalRepository(),
+      this.getTickerRepository(),
+      this.getLogger(),
+      parameters.projectDir
       )
     );
   },
@@ -539,6 +542,7 @@ module.exports = {
       this.getTickerExportHttp(),
       this.getTickers(),
       this.getBacktestingStorage(),
+      this.getCsvExportHttp(),
       parameters.projectDir,
     ));
   },
@@ -594,6 +598,7 @@ module.exports = {
       this.getCandleExportHttp(),
       this.getTickerExportHttp(),
       this.getCsvExportHttp(),
+      this.getInstances(),
       parameters.projectDir
     );
   },
