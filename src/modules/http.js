@@ -5,6 +5,7 @@ const twig = require('twig');
 const crypto = require('crypto');
 const cookieParser = require('cookie-parser');
 const moment = require('moment');
+const os = require('os');
 
 module.exports = class Http {
     constructor(
@@ -99,12 +100,59 @@ module.exports = class Http {
             );
         });
 
+        app.get('/logs/download', async (req, res) => {
+            //localhost:3000/logs/download?type=general //type=pm2-error
+            const {
+                type,
+            } = req.query;
+
+            let file = '';
+            let filename = '';
+
+            const types = {
+                general: 'general',
+                pm2error: 'pm2error',
+                pm2out: 'pm2out'
+            }
+
+            const today = new Date().toISOString().slice(0, 10)
+
+            if (!type) res.status(400).end('Error: type query params is allowed');
+
+            if (type === types.general) {
+                file = `${this.projectDir}/logs/log.log`;
+                filename = `${type}_${today}.log`;
+            }
+
+            if (type === types.pm2error) {
+                file = `${os.homedir()}/.pm2/logs/skinrobot-worker-error.log`;
+                filename = `${type}_${today}.log`;
+            }
+
+            if (type === types.pm2out) {
+                file = `${os.homedir()}/.pm2/logs/skinrobot-worker-out.log`;
+                filename = `${type}_${today}.log`;
+            }
+
+            res.download(file, filename, function (err) {
+                if (err) res.status(400).end(`Error: ${String(err)}`);
+            })
+        });
+
+        //TODO pm2 logs 
+
         app.get('/servertime', async (req, res) => {
 
             const server_date = new Date();
             const server_date_in_unix = new Date() / 1;
+            const server_date_now_in_utc = Date.now();
 
-            res.json({ success: true, server_date: server_date, server_date_in_unix: server_date_in_unix })
+            res.json({ 
+                success: true, 
+                server_date: server_date, 
+                server_date_in_unix: server_date_in_unix,
+                server_date_now_in_utc: server_date_now_in_utc
+            })
         });
 
         //query: ?first_pair="bitmex.BTCUSDT"&second_pair="binance.BTCUSDT"
@@ -255,7 +303,7 @@ module.exports = class Http {
 
             let result = [];
 
-            if (!lead || !driven) res.status(400).end({message: 'lead and driven query params are allowed'});
+            if (!lead || !driven) res.status(400).end('Error: lead and driven query params are allowed');
 
             const split_lead = lead.split('.');
             const leadExchange = split_lead[0];
@@ -290,8 +338,6 @@ module.exports = class Http {
 
             res.status(200).end(result);
         });
-
-
 
         app.get('/charts', async (req, res) => {
             const options = {};
@@ -344,7 +390,6 @@ module.exports = class Http {
             res.json({ success: true, data: options });
         });
         
-
         const ip = this.systemUtil.getConfig('webserver.ip', '0.0.0.0');
         const port = this.systemUtil.getConfig('webserver.port', 3000);
 
