@@ -6,7 +6,7 @@
 .vscode/
 
 #
-/conf.json
+/config/conf.json
 
 #
 /node_modules

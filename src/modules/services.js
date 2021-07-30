@@ -119,7 +119,7 @@ module.exports = {
     }
 
     try {
-      config = JSON.parse(fs.readFileSync(`${parameters.projectDir}/conf.json`, 'utf8'));
+      config = JSON.parse(fs.readFileSync(`${parameters.projectDir}/config/conf.json`, 'utf8'));
     } catch (e) {
       throw new Error(`Invalid conf.json file. Please check: ${String(e)}`);
     }
