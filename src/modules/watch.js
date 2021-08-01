@@ -39,6 +39,8 @@ module.exports = class Watch {
         this.actionListener = actionListener;
         this.balances = balances;
         this.actionDatabaseListener = actionDatabaseListener;
+
+        this.pause = false;
     }
 
     start(options = {}) {
@@ -79,7 +81,17 @@ module.exports = class Watch {
             me.logger.info('Watch module: warmup done; starting ticks');
 
             setInterval(() => {
-                me.tickListener.onTick();
+                //Делаем паузу с 23:50 - 00:00 UTC 
+                //Чтобы создать и загрузить файлы tickers.csv, logs и тд.
+                //TODO
+                if (new Date().getUTCHours() === 23 && new Date().getUTCMinutes() === 45 && !me.pause) {
+                    me.pause = true;
+                    setTimeout(() => { me.pause = false;}, 1000 * 60 * 14);
+                }
+
+                if (!me.pause) {
+                    me.tickListener.onTick();
+                }
             }, me.systemUtil.getConfig('settings.on_tick_time', 1000));
 
         }, me.systemUtil.getConfig('settings.warmup_time', 30000));
@@ -87,8 +99,8 @@ module.exports = class Watch {
         setInterval(async () => {
             await me.logsRepository.cleanOldLogEntries();
             await me.tickerRepository.cleanOldLogEntries();
-
-            me.logger.debug('Logs: Cleanup old entries');
+            //TODO add clear tickers, logs etc.
+            me.logger.debug('Cleanup old entries');
         }, 86455000 * 3); //3 day
 
         eventEmitter.on('ticker', function(tickerEvent) {
@@ -102,7 +114,7 @@ module.exports = class Watch {
             
             if (signalEvent.signals && signalEvent.signals.length > 0) {
                 console.log('SIGNAL EVENT', signalEvent);
-                me.logger.debug(`SIGNAL EVENT: ${signalEvent}`);
+                // me.logger.debug(`SIGNAL EVENT: ${signalEvent}`);
                 me.signalListener.onSignal(signalEvent.signals);
             }
         });
@@ -142,8 +154,8 @@ module.exports = class Watch {
 
         eventEmitter.on('actions',  async actionsEvent => {
             console.log('ACTION EVENT', actionsEvent);
-            me.logger.debug(`ACTION EVENT: ${actionsEvent}`);
-            await this.actionDatabaseListener.insertActions(actionsEvent);
+            // me.logger.debug(`ACTION EVENT: ${actionsEvent}`);
+            // await this.actionDatabaseListener.insertActions(actionsEvent);
             // await me.actionListener.onActions(actionsEvent.actions);
         });
     }

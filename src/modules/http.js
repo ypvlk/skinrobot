@@ -142,19 +142,19 @@ module.exports = class Http {
             })
         });
 
-        //TODO pm2 logs 
-
         app.get('/servertime', async (req, res) => {
 
             const server_date = new Date();
             const server_date_in_unix = new Date() / 1;
             const server_date_now_in_utc = Date.now();
+            const today = new Date().toISOString().slice(0, 10)
 
             res.json({ 
                 success: true, 
-                server_date: server_date, 
-                server_date_in_unix: server_date_in_unix,
-                server_date_now_in_utc: server_date_now_in_utc
+                server_date: `new Date(): ${server_date}`, 
+                server_date_in_unix: `new Date() / 1: ${server_date_in_unix}`,
+                server_date_now_in_utc: `Date.now(): ${server_date_now_in_utc}`,
+                today: `new Date().toISOString().slice(0, 10): ${today}`
             })
         });
 
@@ -185,7 +185,7 @@ module.exports = class Http {
                 limit
             } = req.query;
 
-            if (!date || !period || !limit) res.status(400).end('Error: date query params is allowed');
+            if (!date || !period || !limit) res.status(400).end('Error: date, period and limit query params are allowed');
 
             const pairs = this.instances.symbols.map(pair => ({
                 exchange: pair.exchange,
