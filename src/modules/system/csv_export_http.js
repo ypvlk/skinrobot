@@ -68,6 +68,8 @@ module.exports = class CsvExportHttp {
 
     async saveTickersTableIntoFile(pairs, period, date, path, limit) {
         //https://www.programmersought.com/article/47113674100/
+
+        const me = this;
         const dateNow = new Date(date) / 1;
 
         let startTime = moment(dateNow).utc().startOf('day').unix() * 1000; 
@@ -80,6 +82,8 @@ module.exports = class CsvExportHttp {
 
         let csvParser = new Parser(options);
         let csv_part = csvParser.parse([]);
+
+        me.logger.info(`Start saving into file: ${path}`);
 
         let writerStream = fs.createWriteStream(path);
         writerStream.write(csv_part,'utf8');
@@ -113,12 +117,12 @@ module.exports = class CsvExportHttp {
 
         // Handle stream events-> data, end, and error
         writerStream.on('finish', function() {
-            console.log(`File ${path}.csv saved.`);
+            me.logger.info(`File ${path} saved.`);
             return;
         });
 
         writerStream.on('error', (err) => {
-            this.logger.error(`Write save into file stream error: ${String(err)}`);
+            me.logger.error(`Write save into file stream error: ${String(err)}`);
             return;
         });
     }
