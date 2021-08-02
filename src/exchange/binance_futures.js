@@ -133,9 +133,6 @@ module.exports = class BinanceFutures {
                     me.throttler.addTask('binance_futures_closes_was_update', async () => {
                         this.closesWasUpdate = false;
                     }, 1000 * 45); //4200000
-
-                    console.log('Closes has updated.');
-                    me.logger.info(`Closes has updated.`);
                 }
             }, 1000);
             
