@@ -121,18 +121,17 @@ module.exports = class BinanceFutures {
         
         if (config.key && config.secret && config.key.length > 0 && config.secret.length > 0) {
             setInterval(async () => { //update closes
-                //TODO
                 if (
-                    (Object.keys(me.closes).length === 0  && !me.closesWasUpdate) 
+                    (Object.keys(me.closes).length === 0 && !me.closesWasUpdate) 
                     || 
-                    (new Date().getUTCHours() === 0 && !me.closesWasUpdate)
+                    (new Date().getUTCHours() === 0 && new Date().getUTCMinutes() < 5 && !me.closesWasUpdate)
                 ) { 
                     await me.saveCloses(symbols);
+                    me.closesWasUpdate = true;
                     
-                    this.closesWasUpdate = true;
                     me.throttler.addTask('binance_futures_closes_was_update', async () => {
-                        this.closesWasUpdate = false;
-                    }, 1000 * 45); //4200000
+                        me.closesWasUpdate = false;
+                    }, 1000 * 60 * 6);
                 }
             }, 1000);
             
