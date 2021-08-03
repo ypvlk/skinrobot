@@ -20,7 +20,9 @@ module.exports = class Watch {
         positions,
         actionListener,
         balances,
-        actionDatabaseListener
+        actionDatabaseListener,
+        csvExportHttp,
+        projectDir
     ) {
         this.eventEmitter = eventEmitter;
         this.instances = instances;
@@ -39,6 +41,8 @@ module.exports = class Watch {
         this.actionListener = actionListener;
         this.balances = balances;
         this.actionDatabaseListener = actionDatabaseListener;
+        this.csvExportHttp = csvExportHttp;
+        this.projectDir = projectDir;
 
         this.pause = false;
     }
@@ -81,17 +85,19 @@ module.exports = class Watch {
             me.logger.info('Watch module: warmup done; starting ticks');
 
             setInterval(() => {
-                //Делаем паузу с 23:50 - 00:00 UTC 
-                //Чтобы создать и загрузить файлы tickers.csv, logs и тд.
-                //TODO
-                if (new Date().getUTCHours() === 23 && new Date().getUTCMinutes() === 45 && !me.pause) {
+                if (
+                    new Date().getUTCHours() === 23 && 
+                    new Date().getUTCMinutes() > 45 && 
+                    new Date().getUTCMinutes() < 55 && 
+                    !me.pause
+                ) {
                     me.pause = true;
                     setTimeout(() => { me.pause = false;}, 1000 * 60 * 14);
+                    me.saveFile();
                 }
 
-                if (!me.pause) {
-                    me.tickListener.onTick();
-                }
+                if (!me.pause) me.tickListener.onTick();
+
             }, me.systemUtil.getConfig('settings.on_tick_time', 1000));
 
         }, me.systemUtil.getConfig('settings.warmup_time', 30000));
@@ -158,5 +164,22 @@ module.exports = class Watch {
             // await this.actionDatabaseListener.insertActions(actionsEvent);
             // await me.actionListener.onActions(actionsEvent.actions);
         });
+    }
+
+    saveFile() {
+        const limit = 1000;
+        const period = 3000;
+
+        const pairs = this.instances.symbols.map(pair => ({
+            exchange: pair.exchange,
+            symbol: pair.symbol
+        }));
+
+        const date = new Date().toISOString().slice(0, 10);
+
+        const filename = `${date}_${pairs.map(pair => `${pair.symbol}`).join('_')}_tickers`;
+        const path = `${this.projectDir}/var/tickers/${filename}.csv`;
+
+        return this.csvExportHttp.saveTickersTableIntoFile(pairs, period, date, path, limit);
     }
 };

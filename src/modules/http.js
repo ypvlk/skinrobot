@@ -203,7 +203,7 @@ module.exports = class Http {
                 //We must to create it
                 await this.csvExportHttp.saveTickersTableIntoFile(pairs, period, date, file, limit);
             }
-
+            
             res.download(file, filename, function (err) {
                 if (err) res.status(400).end(`Error: ${String(err)}`);
             })

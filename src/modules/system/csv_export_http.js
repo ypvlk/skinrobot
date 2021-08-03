@@ -68,14 +68,13 @@ module.exports = class CsvExportHttp {
 
     async saveTickersTableIntoFile(pairs, period, date, path, limit) {
         //https://www.programmersought.com/article/47113674100/
-
         const me = this;
-        const dateNow = new Date(date) / 1;
 
+        const dateNow = new Date(date) / 1;
         let startTime = moment(dateNow).utc().startOf('day').unix() * 1000; 
         let endTime = moment(dateNow).utc().endOf('day').unix() * 1000;
 
-        const fields = ['id', 'exchange', 'symbol', 'bidPrice', 'bidSize', 'askPrice', 'askSize', 'period', 'income_at'];
+        const fields = ['id', 'exchange', 'symbol', 'bidPrice', 'bidSize', 'askPrice', 'askSize', 'period', 'close', 'income_at'];
 
         const options = { fields };
         const options2 = {fields: fields, header: false};

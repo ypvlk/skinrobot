@@ -658,7 +658,9 @@ module.exports = {
         this.getPositions(),
         this.getActionListener(),
         this.getBalances(),
-        this.getActionDatabaseListener()
+        this.getActionDatabaseListener(),
+        this.getCsvExportHttp(),
+        parameters.projectDir
       );
   }
 };
