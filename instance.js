@@ -37,7 +37,7 @@ l.forEach((pair) => {
 
 //binance_futures
 let k = [
-    'BTCUSDT' 
+    'BTCBUSD' 
 ]
 
 k.forEach((pair) => {
@@ -69,40 +69,40 @@ k.forEach((pair) => {
     })
 })
 
-// let m = [
-//     'ETHUSDT'
-// ]
+let m = [
+    'ETHBUSD'
+]
 
-// m.forEach((pair) => {
-//     c.symbols.push({
-//         'symbol': pair,
-//         'periods': ['1m'],
-//         'exchange': 'binance_futures',
-//         'is_test': false,
-//         'watch': {},
-//         'trade': {},
-//         'strategy': {
-//             'name': 'mean_reversion',
-//             'options': {
-//                 'driven': 'ETHUSDT', //driven - это означает что это ведомый стак
-//                 'correction_indicator_changes': 0.20, //% - значения отклонения новой разницы процентов от старой
-//                 'get_position_change_tier_1': 0.10, //%
-//                 'get_position_change_tier_2': 0.6, //%
-//                 'get_position_change_tier_3': 0.8, //%
-//                 'stop_lose_position_change': 1.2, //%
-//                 'take_profit_position_change': 0.05, //%
-//                 'hand_delta': 0,
-//                 'tiers': [
-//                     33, //USDT (Asset)
-//                     33,
-//                     33 
-//                 ],
-//                 'ban_trading_time': 30000,//in mill
+m.forEach((pair) => {
+    c.symbols.push({
+        'symbol': pair,
+        'periods': ['1m'],
+        'exchange': 'binance_futures',
+        'is_test': false,
+        'watch': {},
+        'trade': {},
+        'strategy': {
+            'name': 'mean_reversion',
+            'options': {
+                'driven': 'ETHUSDT', //driven - это означает что это ведомый стак
+                'correction_indicator_changes': 0.20, //% - значения отклонения новой разницы процентов от старой
+                'get_position_change_tier_1': 0.10, //%
+                'get_position_change_tier_2': 0.6, //%
+                'get_position_change_tier_3': 0.8, //%
+                'stop_lose_position_change': 1.2, //%
+                'take_profit_position_change': 0.05, //%
+                'hand_delta': 0,
+                'tiers': [
+                    33, //USDT (Asset)
+                    33,
+                    33 
+                ],
+                'ban_trading_time': 30000,//in mill
                 
-//             }
-//         }
-//     })
-// });
+            }
+        }
+    })
+});
 
 // let n = [
 //     'BCHUSDT'
@@ -172,75 +172,75 @@ k.forEach((pair) => {
 //     })
 // });
 
-// let y = [
-//     'HOTUSDT'
-// ]
+let y = [
+    'HOTUSDT'
+]
 
-// y.forEach((pair) => {
-//     c.symbols.push({
-//         'symbol': pair,
-//         'periods': ['1m'],
-//         'exchange': 'binance_futures',
-//         'is_test': false,
-//         'watch': {},
-//         'trade': {},
-//         'strategy': {
-//             'name': 'mean_reversion',
-//             'options': {
-//                 'driven': 'HOTUSDT', //driven - это означает что это ведомый стак
-//                 'correction_indicator_changes': 0.20, //% - значения отклонения новой разницы процентов от старой
-//                 'get_position_change_tier_1': 0.10, //%
-//                 'get_position_change_tier_2': 0.6, //%
-//                 'get_position_change_tier_3': 0.8, //%
-//                 'stop_lose_position_change': 1.2, //%
-//                 'take_profit_position_change': 0.05, //%
-//                 'hand_delta': 0,
-//                 'tiers': [
-//                     33, //USDT (Asset)
-//                     33,
-//                     33 
-//                 ],
-//                 'ban_trading_time': 30000,//in mill
+y.forEach((pair) => {
+    c.symbols.push({
+        'symbol': pair,
+        'periods': ['1m'],
+        'exchange': 'binance_futures',
+        'is_test': false,
+        'watch': {},
+        'trade': {},
+        'strategy': {
+            'name': 'mean_reversion',
+            'options': {
+                'driven': 'HOTUSDT', //driven - это означает что это ведомый стак
+                'correction_indicator_changes': 0.20, //% - значения отклонения новой разницы процентов от старой
+                'get_position_change_tier_1': 0.10, //%
+                'get_position_change_tier_2': 0.6, //%
+                'get_position_change_tier_3': 0.8, //%
+                'stop_lose_position_change': 1.2, //%
+                'take_profit_position_change': 0.05, //%
+                'hand_delta': 0,
+                'tiers': [
+                    33, //USDT (Asset)
+                    33,
+                    33 
+                ],
+                'ban_trading_time': 30000,//in mill
                 
-//             }
-//         }
-//     })
-// });
+            }
+        }
+    })
+});
 
-// let z = [
-//     'BTTUSDT'
-// ]
+let z = [
+    'BTTUSDT'
+]
 
-// z.forEach((pair) => {
-//     c.symbols.push({
-//         'symbol': pair,
-//         'periods': ['1m'],
-//         'exchange': 'binance_futures',
-//         'is_test': false,
-//         'watch': {},
-//         'trade': {},
-//         'strategy': {
-//             'name': 'mean_reversion',
-//             'options': {
-//                 'driven': 'BTTUSDT', //driven - это означает что это ведомый стак
-//                 'correction_indicator_changes': 0.20, //% - значения отклонения новой разницы процентов от старой
-//                 'get_position_change_tier_1': 0.10, //%
-//                 'get_position_change_tier_2': 0.6, //%
-//                 'get_position_change_tier_3': 0.8, //%
-//                 'stop_lose_position_change': 1.2, //%
-//                 'take_profit_position_change': 0.05, //%
-//                 'hand_delta': 0,
-//                 'tiers': [
-//                     33, //USDT (Asset)
-//                     33,
-//                     33 
-//                 ],
-//                 'ban_trading_time': 30000,//in mill
+z.forEach((pair) => {
+    c.symbols.push({
+        'symbol': pair,
+        'periods': ['1m'],
+        'exchange': 'binance_futures',
+        'is_test': false,
+        'watch': {},
+        'trade': {},
+        'strategy': {
+            'name': 'mean_reversion',
+            'options': {
+                'driven': 'BTTUSDT', //driven - это означает что это ведомый стак
+                'correction_indicator_changes': 0.20, //% - значения отклонения новой разницы процентов от старой
+                'get_position_change_tier_1': 0.10, //%
+                'get_position_change_tier_2': 0.6, //%
+                'get_position_change_tier_3': 0.8, //%
+                'stop_lose_position_change': 1.2, //%
+                'take_profit_position_change': 0.05, //%
+                'hand_delta': 0,
+                'tiers': [
+                    33, //USDT (Asset)
+                    33,
+                    33 
+                ],
+                'ban_trading_time': 30000,//in mill
                 
-//             }
-//         }
-//     })
-// });
+            }
+        }
+    })
+});
 
 
 //Инфа по amount и по тирам
