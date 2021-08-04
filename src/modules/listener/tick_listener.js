@@ -80,7 +80,7 @@ module.exports = class TickListener {
             }
 
             tickers.push(ticker);
-
+            
             //Get positions, if exists, for this pairs
             const position = me.exchangePositions.get(pair.exchange, pair.symbol);
             if (position) positions.push(position);

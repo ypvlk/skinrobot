@@ -50,7 +50,7 @@ k.forEach((pair) => {
         'strategy': {
             'name': 'mean_reversion',
             'options': {
-                'lead': 'BTCUSDT', //lead - означает что этот стак ведущий
+                'lead': 'BTCBUSD', //lead - означает что этот стак ведущий
                 'correction_indicator_changes': 0.20,
                 'get_position_change_tier_1': 0.10, //%
                 'get_position_change_tier_2': 0.6, //%
@@ -84,7 +84,7 @@ m.forEach((pair) => {
         'strategy': {
             'name': 'mean_reversion',
             'options': {
-                'driven': 'ETHUSDT', //driven - это означает что это ведомый стак
+                'driven': 'ETHBUSD', //driven - это означает что это ведомый стак
                 'correction_indicator_changes': 0.20, //% - значения отклонения новой разницы процентов от старой
                 'get_position_change_tier_1': 0.10, //%
                 'get_position_change_tier_2': 0.6, //%
