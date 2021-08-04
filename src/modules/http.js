@@ -104,7 +104,8 @@ module.exports = class Http {
         });
 
         app.get('/logs/download', async (req, res) => {
-            //localhost:3000/logs/download?type=general //type=pm2-error
+            //localhost:3000/logs/download?type=general //type=pm2error
+            //http://206.189.96.37:3000/logs/download?type=general
             const {
                 type,
             } = req.query;
@@ -177,8 +178,9 @@ module.exports = class Http {
             res.render('../templates/ticker.html.twig', options)
         });
 
-        app.get('/tickers/download', async (req, res) => {
+        app.post('/tickers/download', async (req, res) => {
             //localhost:3000/tickers/download?date=2021-07-16&period=3000&limit=1000
+            //http://206.189.96.37:3000/tickers/download?date=2021-08-03&period=3000&limit=1000
             const {
                 date,
                 period,
