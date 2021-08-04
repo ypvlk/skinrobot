@@ -178,7 +178,7 @@ module.exports = class Http {
             res.render('../templates/ticker.html.twig', options)
         });
 
-        app.post('/tickers/download', async (req, res) => {
+        app.get('/tickers/download', async (req, res) => {
             //localhost:3000/tickers/download?date=2021-07-16&period=3000&limit=1000
             //http://206.189.96.37:3000/tickers/download?date=2021-08-03&period=3000&limit=1000
             const {
@@ -186,7 +186,7 @@ module.exports = class Http {
                 period,
                 limit
             } = req.query;
-
+            
             if (!date || !period || !limit) res.status(400).end('Error: date, period and limit query params are allowed');
 
             const pairs = this.instances.symbols.map(pair => ({
