@@ -9,7 +9,7 @@
         "instances" : 1,
         "watch"     : true,
         "merge_logs" :true,
-        "ignore_watch": ["node_modules", "logs", "var", "web"],
+        "ignore_watch": ["node_modules", "logs", "var", "web", "./bot.db", "./bot.db-shm", "./bot.db-wal"],
         "max_memory_restart": "512M",
         "pid_file"   : "logs/info-pm2.log",
         "env": {
