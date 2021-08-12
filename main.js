@@ -14,8 +14,9 @@ const services = require('./src/modules/services');
 program
     .command('watch')
     .description('start crypto trading bot with watch option')
-    .option('-ws, --websocket <websocket>')
+    .option('-ws, --websocket <websocket>', 'on and off websockets', 'off')
     .action(async options => {
+
         await services.boot(__dirname);
         const cmd = new WatchCommand();
         cmd.execute(options);
@@ -24,7 +25,7 @@ program
 program
     .command('trade')
     .description('start crypto trading bot')
-    .option('-ws, --websocket <websocket>')
+    .option('-ws, --websocket <websocket>', 'on and off websockets', 'off')
     .action(async options => {
         await services.boot(__dirname);
         const cmd = new TradeCommand();
@@ -36,18 +37,16 @@ program
     .description('process getting historical candles data and saving into db')
     .option('-e, --exchange <exchange>')
     .option('-s, --symbol <symbol>')
-    .option('-p, --period <period>', '1d')
-    .option('-d, --days <days>', 'days in past to collect start', '7')
+    .option('-p, --period <period>', 'period 1d, 5m etc', '1d')
+    .option('-d, --days <days>', 'days in past to collect start', '1')
     .action(async options => {
         
-        if (!options.exchange || !options.symbol || !options.period || !options.days) {
+        if (!options.exchange || !options.symbol) {
             throw new Error('Not all options are given');
         }
 
         await services.boot(__dirname);
-
         const cmd = new BackfillCandlesCommand();
-        
         await cmd.execute(options.exchange, options.symbol, options.period, options.days);
 
         process.exit();
@@ -56,17 +55,11 @@ program
 program
     .command('backfill_tickers')
     .description('process getting tickers data in real time and saving into db')
-    .option('-h, --hours <hours>', 'time in hours to collect data')
+    .option('-h, --hours <hours>', 'time in hours to collect data', '1')
     .action(async options => {
-        
-        if (!options.hours) {
-            throw new Error('<hours> parameter cannot be empty');
-        }
 
         const time = +options.hours * 3600000; //3600000 - 1 hour in mill
-
         await services.boot(__dirname);
-
         const cmd = new BackfillTickersCommand();
         cmd.execute(time);
     });
@@ -78,8 +71,8 @@ program
     .option('-c, --correction [correction...]')
     .option('-g, --gposition [gposition...]')
     .option('-tp, --tprofit <tprofit>')
-    .option('-p, --period <period>', '3000')
-    .option('-l, --limit <limit>', '100')
+    .option('-p, --period <period>', 'period for one tick saved in millsecond', '3000')
+    .option('-l, --limit <limit>', 'limits for gets from db for one tick', '100')
     .action(async options => {
 
         if (!options.date || !options.correction || !options.gposition || !options.tprofit) {
@@ -87,7 +80,6 @@ program
         }
 
         await services.boot(__dirname);
-
         const cmd = new BacktestingCommand();
         cmd.execute(options);
     });
@@ -95,7 +87,7 @@ program
 program
     .command('server')
     .description('run http server')
-    .option('-ws, --websocket <websocket>')
+    .option('-ws, --websocket <websocket>', 'on and off websockets', 'off')
     .action(async options => {
         await services.boot(__dirname);
         const cmd = new ServerCommand();

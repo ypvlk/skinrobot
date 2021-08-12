@@ -62,7 +62,7 @@ module.exports = class TickerRepository {
         });
     }
 
-    cleanOldLogEntries(days = 14) {
+    cleanOldLogEntries(days = 7) {
         return new Promise(resolve => {
             const stmt = this.db.prepare('DELETE FROM tickers WHERE income_at < $income_at');
 

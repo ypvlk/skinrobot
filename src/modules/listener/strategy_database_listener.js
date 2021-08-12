@@ -3,7 +3,6 @@ const _ = require('lodash');
 module.exports = class StrategyDatabaseListener {
     constructor(
         meanReversionRepository,
-
         backtestingStorage
     ) {
         this.meanReversionRepository = meanReversionRepository;

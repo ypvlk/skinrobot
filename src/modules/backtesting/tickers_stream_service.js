@@ -72,7 +72,7 @@ module.exports = class TickersStreamService {
                         let j = 0;
 
                         for(let i = 0; i < tickersFromDB.length / pairs.length; i++) {
-                            if (!tickersFromDB[j + 1]) return;
+                            if (!tickersFromDB[j + 1]) break;
     
                             const t = [tickersFromDB[j], tickersFromDB[j+1]];
     

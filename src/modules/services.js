@@ -113,10 +113,10 @@ module.exports = {
       throw new Error(`Invalid instance.js file. Please check: ${String(e)}`);
     }
 
-    // boot instance eg to load pairs external
-    if (typeof instances.init === 'function') {
-      await instances.init();
-    }
+    // // boot instance eg to load pairs external
+    // if (typeof instances.init === 'function') {
+    //   await instances.init();
+    // }
 
     try {
       config = JSON.parse(fs.readFileSync(`${parameters.projectDir}/config/conf.json`, 'utf8'));

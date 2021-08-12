@@ -2,8 +2,8 @@
     "apps" : [
         {
         "name"        : "skinrobot-worker",
-        "script"      : "npm",
-        "args"        : "run watch",
+        "script"      : "./main.js",
+        "args"        : "watch -ws on",
         "exec_mode"   : "cluster",
         "interpreter_args": "--max-old-space-size=512", 
         "instances" : 1,

@@ -111,11 +111,11 @@ module.exports = class BinanceFutures {
 
     start(config, symbols) {
 
-        const ccxtClient = (this.ccxtClient = new ccxt.binance({
+        this.ccxtClient = new ccxt.binance({
             apiKey: config.key,
             secret: config.secret,
             options: { defaultType: 'future', warnOnFetchOpenOrdersWithoutSymbol: false }
-        }));
+        });
 
         const me = this;
         
@@ -176,7 +176,7 @@ module.exports = class BinanceFutures {
             this.closes[`${symbol.symbol}`] = await this.getCloses(symbol.symbol, period, time);
         }
 
-        this.logger.info(`Closes have updated for ${symbols.length} pairs`);
+        this.logger.debug(`Closes have updated for ${symbols.length} pairs`);
         console.log(`Closes have updated for ${symbols.length} pairs`);
     }
 

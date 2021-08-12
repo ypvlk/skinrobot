@@ -82,13 +82,15 @@ module.exports = class Watch {
         // let the system bootup; eg let the candle be filled by exchanges
         setTimeout(() => {
             console.log('Watch module: warmup done; starting ticks');
-            me.logger.info('Watch module: warmup done; starting ticks');
+            me.logger.debug('Watch module: warmup done; starting ticks');
 
             setInterval(() => {
+                const date = new Date();
+                //TODO нужно что то сделать с этой паузуй там
                 if (
-                    new Date().getUTCHours() === 23 && 
-                    new Date().getUTCMinutes() > 45 && 
-                    new Date().getUTCMinutes() < 55 && 
+                    date.getUTCHours() === 23 && 
+                    date.getUTCMinutes() >= 45 && 
+                    date.getUTCMinutes() <= 55 && 
                     !me.pause
                 ) {
                     me.pause = true;
@@ -105,9 +107,9 @@ module.exports = class Watch {
         setInterval(async () => {
             await me.logsRepository.cleanOldLogEntries();
             await me.tickerRepository.cleanOldLogEntries();
-            //TODO add clear tickers, logs etc.
+
             me.logger.debug('Cleanup old entries');
-        }, 86455000 * 3); //3 day
+        }, 86455000 * 2); //* 3 day
 
         eventEmitter.on('ticker', function(tickerEvent) {
             tickers.set(tickerEvent.ticker); //save at storage
@@ -118,48 +120,48 @@ module.exports = class Watch {
             // await me.strategyDatabaseListener.saveData(signalEvent); //save strategy data at db 
             // await me.signalDatabaseListener.saveSignal(signalEvent); //save signal at db
             
-            if (signalEvent.signals && signalEvent.signals.length > 0) {
-                console.log('SIGNAL EVENT', signalEvent);
-                // me.logger.debug(`SIGNAL EVENT: ${signalEvent}`);
-                me.signalListener.onSignal(signalEvent.signals);
-            }
+            // if (signalEvent.signals && signalEvent.signals.length > 0) {
+            //     console.log('SIGNAL EVENT', signalEvent);
+            //     // me.logger.debug(`SIGNAL EVENT: ${signalEvent}`);
+            //     me.signalListener.onSignal(signalEvent.signals);
+            // }
         });
 
-        eventEmitter.on('exchange_balance', function(balance) {
-            // console.log('balance', balance);
-            balances.set(balance);
-        });
+        // eventEmitter.on('exchange_balance', function(balance) {
+        //     // console.log('balance', balance);
+        //     balances.set(balance);
+        // });
 
-        eventEmitter.on('exchange_order', function(orderEvent) {
-            switch (orderEvent.getAction()) {
-                case 'SAVE':
-                    orders.set(orderEvent); //save at storage
-                    return;
-                case 'DELETE':
-                    orders.del(orderEvent.getExchange(), orderEvent.getSymbol(), orderEvent.getOrder().getStatus()); //delete at storage
-                    return;
-                default:
-                    me.logger.info(`Invalid exchange order event action: ${orderEvent.getAction()}`);
-                    return;
-            }
-        });
+        // eventEmitter.on('exchange_order', function(orderEvent) {
+        //     switch (orderEvent.getAction()) {
+        //         case 'SAVE':
+        //             orders.set(orderEvent); //save at storage
+        //             return;
+        //         case 'DELETE':
+        //             orders.del(orderEvent.getExchange(), orderEvent.getSymbol(), orderEvent.getOrder().getStatus()); //delete at storage
+        //             return;
+        //         default:
+        //             me.logger.info(`Invalid exchange order event action: ${orderEvent.getAction()}`);
+        //             return;
+        //     }
+        // });
 
-        eventEmitter.on('exchange_position', function(positionEvent) {
-            switch (positionEvent.getAction()) {
-                case 'SAVE':
-                    positions.set(positionEvent); //save at storage
-                    return;
-                case 'DELETE':
-                    positions.del(positionEvent.getExchange(), positionEvent.getSymbol())//delete at storage
-                    return;
-                default:
-                    me.logger.info(`Invalid exchange position event action: ${positionEvent.getAction()}`);
-                    return;
-            }
-        });
+        // eventEmitter.on('exchange_position', function(positionEvent) {
+        //     switch (positionEvent.getAction()) {
+        //         case 'SAVE':
+        //             positions.set(positionEvent); //save at storage
+        //             return;
+        //         case 'DELETE':
+        //             positions.del(positionEvent.getExchange(), positionEvent.getSymbol())//delete at storage
+        //             return;
+        //         default:
+        //             me.logger.info(`Invalid exchange position event action: ${positionEvent.getAction()}`);
+        //             return;
+        //     }
+        // });
 
         eventEmitter.on('actions',  async actionsEvent => {
-            console.log('ACTION EVENT', actionsEvent);
+            // console.log('ACTION EVENT', actionsEvent);
             // me.logger.debug(`ACTION EVENT: ${actionsEvent}`);
             // await this.actionDatabaseListener.insertActions(actionsEvent);
             // await me.actionListener.onActions(actionsEvent.actions);
