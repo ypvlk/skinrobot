@@ -79,7 +79,7 @@ module.exports = class Watch {
             me.logger.info('Trade module: warmup done; starting ticks');
 
             setInterval(() => {
-              me.tickListener.onTick();
+                me.tickListener.onTick();
             }, me.systemUtil.getConfig('settings.on_tick_time', 1000));
 
         }, me.systemUtil.getConfig('settings.warmup_time', 30000));

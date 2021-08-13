@@ -69,15 +69,12 @@ module.exports = class Watch {
             ', '
         )}`;
         
-        console.log('message', message);
-        // this.notify.send(message);
+        this.logger.info(message);
+        console.log(message);
 
         const me = this;
         const { eventEmitter } = this;
         const { tickers } = this;
-        const { orders } = this;
-        const { positions } = this;
-        const { balances } = this;
         
         // let the system bootup; eg let the candle be filled by exchanges
         setTimeout(() => {
@@ -95,7 +92,7 @@ module.exports = class Watch {
                 ) {
                     me.pause = true;
                     setTimeout(() => { me.pause = false;}, 1000 * 60 * 14);
-                    me.saveFile();
+                    me.saveTickersTableIntoFile();
                 }
 
                 if (!me.pause) me.tickListener.onTick();
@@ -108,7 +105,7 @@ module.exports = class Watch {
             await me.logsRepository.cleanOldLogEntries();
             await me.tickerRepository.cleanOldLogEntries();
 
-            me.logger.debug('Cleanup old entries');
+            me.logger.info('Cleanup old entries');
         }, 86455000 * 2); //* 3 day
 
         eventEmitter.on('ticker', function(tickerEvent) {
@@ -127,39 +124,6 @@ module.exports = class Watch {
             // }
         });
 
-        // eventEmitter.on('exchange_balance', function(balance) {
-        //     // console.log('balance', balance);
-        //     balances.set(balance);
-        // });
-
-        // eventEmitter.on('exchange_order', function(orderEvent) {
-        //     switch (orderEvent.getAction()) {
-        //         case 'SAVE':
-        //             orders.set(orderEvent); //save at storage
-        //             return;
-        //         case 'DELETE':
-        //             orders.del(orderEvent.getExchange(), orderEvent.getSymbol(), orderEvent.getOrder().getStatus()); //delete at storage
-        //             return;
-        //         default:
-        //             me.logger.info(`Invalid exchange order event action: ${orderEvent.getAction()}`);
-        //             return;
-        //     }
-        // });
-
-        // eventEmitter.on('exchange_position', function(positionEvent) {
-        //     switch (positionEvent.getAction()) {
-        //         case 'SAVE':
-        //             positions.set(positionEvent); //save at storage
-        //             return;
-        //         case 'DELETE':
-        //             positions.del(positionEvent.getExchange(), positionEvent.getSymbol())//delete at storage
-        //             return;
-        //         default:
-        //             me.logger.info(`Invalid exchange position event action: ${positionEvent.getAction()}`);
-        //             return;
-        //     }
-        // });
-
         eventEmitter.on('actions',  async actionsEvent => {
             // console.log('ACTION EVENT', actionsEvent);
             // me.logger.debug(`ACTION EVENT: ${actionsEvent}`);
@@ -168,7 +132,7 @@ module.exports = class Watch {
         });
     }
 
-    saveFile() {
+    saveTickersTableIntoFile() {
         const limit = 1000;
         const period = 3000;
 
@@ -179,8 +143,8 @@ module.exports = class Watch {
 
         const date = new Date().toISOString().slice(0, 10);
 
-        const filename = `${date}_${pairs.map(pair => `${pair.symbol}`).join('_')}_tickers`;
-        const path = `${this.projectDir}/var/tickers/${filename}.csv`;
+        const filename = `${date}_${pairs.map(pair => `${pair.symbol}`).join('_')}_tickers.csv`;
+        const path = `${this.projectDir}/var/tickers/${filename}`;
 
         return this.csvExportHttp.saveTickersTableIntoFile(pairs, period, date, path, limit);
     }

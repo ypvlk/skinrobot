@@ -21,18 +21,20 @@ module.exports = class Ws {
 
         const webSocketServer = new WebSocket.Server({ host, port });
 
+        const me = this;
+
         webSocketServer.on('connection', ws => {
             ws.on('error', error => {
-                this.logger.error(`WebSocket: Connection error: ${String(error)}`);
+                me.logger.error(`WebSocket: Connection error: ${String(error)}`);
                 
                 setTimeout(() => {
-                    this.logger.info(`Websocket: Connection reconnect`);
-                    this.start();
+                    me.logger.debug(`Websocket: Connection reconnect`);
+                    me.start();
                 }, 1000 * 30);
             });
 
             ws.on('close', (event) => {
-                this.logger.error(
+                me.logger.error(
                     `WebSocket: Connection closed: ${JSON.stringify([
                         event.code,
                         event.message
@@ -56,6 +58,7 @@ module.exports = class Ws {
             });
         });
 
+        me.logger.info(`WebSocket listening on: ${host}:${port}`);
         console.log(`WebSocket listening on: ${host}:${port}`);
     }
 };

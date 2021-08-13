@@ -3,11 +3,11 @@
         {
         "name"        : "skinrobot-worker",
         "script"      : "./main.js",
-        "args"        : "watch -ws on",
+        "args"        : "watch",
         "exec_mode"   : "cluster",
         "interpreter_args": "--max-old-space-size=512", 
         "instances" : 1,
-        "watch"     : true,
+        "watch"     : false,
         "merge_logs" :true,
         "ignore_watch": ["node_modules", "logs", "var", "web", "./bot.db", "./bot.db-shm", "./bot.db-wal"],
         "max_memory_restart": "512M",

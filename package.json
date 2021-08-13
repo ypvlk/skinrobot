@@ -12,7 +12,7 @@
     "trade": "node main.js trade -ws on",
     "watch": "node main.js watch -ws on",
     "start": "node ...",
-    "start-docker": "pm2-docker start pm2_config/config.json",
+    "start-docker": "pm2-runtime start pm2_config/config.json",
     "test": "jest"
   },
   "author": "Yaroslav Pavliuk",

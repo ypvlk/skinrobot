@@ -113,11 +113,6 @@ module.exports = {
       throw new Error(`Invalid instance.js file. Please check: ${String(e)}`);
     }
 
-    // // boot instance eg to load pairs external
-    // if (typeof instances.init === 'function') {
-    //   await instances.init();
-    // }
-
     try {
       config = JSON.parse(fs.readFileSync(`${parameters.projectDir}/config/conf.json`, 'utf8'));
     } catch (e) {
@@ -570,6 +565,7 @@ module.exports = {
   createBacktestingInstance: function() {
     return new Backtesting(
       this.getEventEmitter(),
+      this.getLogger(),
       this.getTickers(),
       this.getTickListener(),
       this.getSignalDatabaseListener(),
@@ -594,6 +590,7 @@ module.exports = {
   createWebserverInstance: function() {
     return new Http(
       this.getSystemUtil(),
+      this.getLogger(),
       this.getLogsHttp(),
       this.getCandleExportHttp(),
       this.getTickerExportHttp(),

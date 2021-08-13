@@ -11,6 +11,7 @@ const fs = require('fs');
 module.exports = class Http {
     constructor(
         systemUtil,
+        logger,
         logsHttp,
         candleExportHttp,
         tickerExportHttp,
@@ -19,6 +20,7 @@ module.exports = class Http {
         projectDir
     ) {
         this.systemUtil = systemUtil;
+        this.logger = logger;
         this.logsHttp = logsHttp;
         this.candleExportHttp = candleExportHttp;
         this.tickerExportHttp = tickerExportHttp;
@@ -148,7 +150,7 @@ module.exports = class Http {
             const server_date = new Date();
             const server_date_in_unix = new Date() / 1;
             const server_date_now_in_utc = Date.now();
-            const today = new Date().toISOString().slice(0, 10)
+            const today = new Date().toISOString().slice(0, 16)
 
             res.json({ 
                 success: true, 
@@ -194,8 +196,8 @@ module.exports = class Http {
                 symbol: pair.symbol
             }));
 
-            const filename = `${date}_${pairs.map(pair => `${pair.symbol}`).join('_')}_tickers`
-            const file = `${this.projectDir}/var/tickers/${filename}.csv`;
+            const filename = `${date}_${pairs.map(pair => `${pair.symbol}`).join('_')}_tickers.csv`
+            const file = `${this.projectDir}/var/tickers/${filename}`;
 
             try {
                 fs.accessSync(file, fs.constants.F_OK);
@@ -432,6 +434,7 @@ module.exports = class Http {
 
         app.listen(port, ip);
 
+        this.logger.info(`Webserver listening on: ${ip}:${port}`);
         console.log(`Webserver listening on: ${ip}:${port}`);
     }
 };

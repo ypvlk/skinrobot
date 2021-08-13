@@ -14,7 +14,7 @@ const services = require('./src/modules/services');
 program
     .command('watch')
     .description('start crypto trading bot with watch option')
-    .option('-ws, --websocket <websocket>', 'on and off websockets', 'off')
+    .option('-ws, --websocket <websocket>', 'on and off websockets', 'on')
     .action(async options => {
 
         await services.boot(__dirname);
@@ -25,7 +25,7 @@ program
 program
     .command('trade')
     .description('start crypto trading bot')
-    .option('-ws, --websocket <websocket>', 'on and off websockets', 'off')
+    .option('-ws, --websocket <websocket>', 'on and off websockets', 'on')
     .action(async options => {
         await services.boot(__dirname);
         const cmd = new TradeCommand();
@@ -69,13 +69,14 @@ program
     .description('process testing strategy on saved data and params')
     .option('-d, --date <date>')
     .option('-c, --correction [correction...]')
-    .option('-g, --gposition [gposition...]')
-    .option('-tp, --tprofit <tprofit>')
+    .option('-gp, --get_position [get_position...]')
+    .option('-tp, --take_profit <take_profit>', 'change for take profit', '0.055')
+    .option('-ec, --exchange_commission <exchange_commission>', 'commission for one position', '0.04')
     .option('-p, --period <period>', 'period for one tick saved in millsecond', '3000')
-    .option('-l, --limit <limit>', 'limits for gets from db for one tick', '100')
+    .option('-l, --limit <limit>', 'limits for gets from db for one tick', '1000')
     .action(async options => {
 
-        if (!options.date || !options.correction || !options.gposition || !options.tprofit) {
+        if (!options.date || !options.correction || !options.get_position || !options.take_profit) {
             throw new Error('Not all options are given');
         }
 
@@ -87,7 +88,7 @@ program
 program
     .command('server')
     .description('run http server')
-    .option('-ws, --websocket <websocket>', 'on and off websockets', 'off')
+    .option('-ws, --websocket <websocket>', 'on and off websockets', 'on')
     .action(async options => {
         await services.boot(__dirname);
         const cmd = new ServerCommand();

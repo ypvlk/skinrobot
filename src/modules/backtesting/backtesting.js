@@ -2,6 +2,7 @@
 module.exports = class Backtesting {
     constructor(
         eventEmitter,
+        logger,
         tickers,
         tickListener,
         signalDatabaseListener,
@@ -10,6 +11,7 @@ module.exports = class Backtesting {
         actionDatabaseListener
     ) {
         this.eventEmitter = eventEmitter;
+        this.logger = logger;
         this.tickers = tickers;
         this.tickListener = tickListener;
         this.signalDatabaseListener = signalDatabaseListener;
@@ -19,6 +21,7 @@ module.exports = class Backtesting {
     }
 
     start(options = {}) {
+        this.logger.debug('Backtesting module started...');
         console.log('Backtesting module started...');
 
         const me = this;

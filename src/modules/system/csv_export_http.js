@@ -21,7 +21,8 @@ module.exports = class CsvExportHttp {
     }
 
     saveSyncIntoFile(data, path, fields) {
-        console.log('Saving data into file...');
+        this.logger.debug(`Save sync into file start...`);
+        console.log('Save sync into file start...');
 
         const csvParser = new Parser({ fields });
         const csv = csvParser.parse(data); //[это массив обьектов]
@@ -30,6 +31,7 @@ module.exports = class CsvExportHttp {
             if (err) this.logger.error(`Write save into file sync error: ${String(err)}`);
         });
 
+        this.logger.info(`File: ${path}.csv saved.`);
         console.log(`File ${path}.csv saved.`);
     }
 
@@ -71,6 +73,7 @@ module.exports = class CsvExportHttp {
         const me = this;
 
         const dateNow = new Date(date) / 1;
+
         let startTime = moment(dateNow).utc().startOf('day').unix() * 1000; 
         let endTime = moment(dateNow).utc().endOf('day').unix() * 1000;
 
@@ -82,7 +85,7 @@ module.exports = class CsvExportHttp {
         let csvParser = new Parser(options);
         let csv_part = csvParser.parse([]);
 
-        me.logger.info(`Start saving into file: ${path}`);
+        me.logger.debug(`Start write streaming into file: ${path}`);
 
         let writerStream = fs.createWriteStream(path);
         writerStream.write(csv_part,'utf8');
@@ -100,7 +103,7 @@ module.exports = class CsvExportHttp {
                 csvParser = new Parser(options2);
                 csv_part = csvParser.parse(tickersFromDB);
 
-                // Need to add enter
+                //add enter
                 csv += '\n';
                 csv += csv_part;
 
@@ -116,7 +119,7 @@ module.exports = class CsvExportHttp {
 
         // Handle stream events-> data, end, and error
         writerStream.on('finish', function() {
-            me.logger.info(`File ${path} saved.`);
+            me.logger.info(`File: ${path} saved.`);
             return;
         });
 
