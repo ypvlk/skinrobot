@@ -206,6 +206,7 @@ module.exports = class Http {
                 //file is NOT exists
                 //We must to create it
                 await this.csvExportHttp.saveTickersTableIntoFile(pairs, period, date, file, limit);
+                
             }
             
             res.download(file, filename, function (err) {
