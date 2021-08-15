@@ -58,26 +58,12 @@ module.exports = class BinanceFutures {
         const me = this;
         
         if (config.key && config.secret && config.key.length > 0 && config.secret.length > 0) {
+
             setInterval(async () => { //update closes
-                if (
-                    (Object.keys(me.closes).length === 0 && !me.closesWasUpdate) 
-                    || 
-                    (new Date().getUTCHours() === 0 && new Date().getUTCMinutes() < 5 && !me.closesWasUpdate)
-                ) { 
-
-                    me.throttler.addTask('binance_futures_closes_update', async () => {
-                        await me.saveCloses(symbols);
-                    }, 1000);
-
-                    me.closesWasUpdate = true;
-
-                    
-                    
-                    me.throttler.addTask('binance_futures_closes_was_update', async () => {
-                        me.closesWasUpdate = false;
-                    }, 1000 * 60 * 6);
-                }
-            }, 1000 * 5);
+                me.throttler.addTask('binance_futures_closes_update', async () => {
+                    await me.saveCloses(symbols);
+                });
+            }, 1000 * 25);
             
             setInterval(async () => {
                 me.throttler.addTask('binance_futures_sync_orders', async () => {
@@ -91,7 +77,7 @@ module.exports = class BinanceFutures {
                 });
             }, 1000 * 36); //1000 * 36
 
-            setTimeout(async () => {
+            setTimeout(async () => { //Run one time
                 me.throttler.addTask('binance_futures_sync_orders', async () => {
                     await me.syncOrdersViaRestApi();
                 });
@@ -102,7 +88,7 @@ module.exports = class BinanceFutures {
 
             setTimeout(async () => {
                 await me.initUserWebsocket();
-            }, 3000);
+            }, 7000);
 
             setTimeout(async () => {
                 await me.initPublicWebsocket(symbols);
@@ -179,17 +165,36 @@ module.exports = class BinanceFutures {
 
         return (Number(result[0][4]));
     }
-
+    //TODO
     async saveCloses(symbols) {
-        const period = '1d';
-        const time = new Date() / 1 - 86400000; //close yesterday
+        const date = new Date();
+        const time = date / 1 - 86400000; //close yesterday
 
-        for (const symbol of symbols) {
-            this.closes[`${symbol.symbol}`] = await this.getCloses(symbol.symbol, period, time);
+        const me = this;
+        
+        if (
+            (Object.keys(me.closes).length === 0 && !me.closesWasUpdate) 
+            || 
+            (date.getUTCHours() === 0 && !me.closesWasUpdate)
+        ) { 
+
+            const period = '1d';
+
+            for (const symbol of symbols) {
+                this.closes[`${symbol.symbol}`] = await me.getCloses(symbol.symbol, period, time);
+                console.log('Итерация в цикле. Должно быть две подряд и первые чем ниже текст'); //TODO
+            }
+
+            console.log('обновляем флаг'); //TODO
+            me.closesWasUpdate = true;
+
+            me.throttler.addTask('binance_futures_closes_was_update', async () => {
+                me.closesWasUpdate = false;
+            }, 1000 * 60 * 60 * 2);
+
+            me.logger.debug(`Closes have updated for ${symbols.length} pairs`);
+            console.log(`Closes have updated for ${symbols.length} pairs`);
         }
-
-        this.logger.debug(`Closes have updated for ${symbols.length} pairs`);
-        console.log(`Closes have updated for ${symbols.length} pairs`);
     }
 
     async order(order) {
