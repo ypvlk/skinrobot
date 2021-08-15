@@ -1,58 +1,36 @@
 const f = require('node-fetch');
+const querystring = require('querystring');
 
 module.exports = class RequestClient {
     constructor(logger) {
         this.logger = logger;
     }
 
-    executeRequest(options) {
+    executeGETRequest(uri, options = {}, headers) {
         return new Promise(resolve => {
-        f(options, (error, response, body) => {
-            resolve({
-                error: error,
-                response: response,
-                body: body
+            if (!uri) throw new Error(`Uri is allowed`);
+            let url = uri;
+
+            if (Object.keys(options).length > 0) {
+                const query = querystring.stringify(options);
+                url = `${url}?${query}`;
+            }
+            
+            f(url, {
+                method: 'GET',
+                headers: headers ? headers : {'Content-Type': 'application/json'}
+            })
+            .then(res => {
+                if (!res.ok) throw new Error(`${JSON.stringify(res.statusText)}`);
+                return res.json();
+            })
+            .then(body => {
+                resolve(body);
+            })
+            .catch(err => {
+                this.logger.error(`Request execute error: ${String(err)}`);
+                reject(err)
             });
-        });
-        });
-    }
-
-    executeRequestRetry(options, retryCallback, retryMs = 500, retries = 10) {
-        const wait = time => {
-        return new Promise(resolve => {
-            setTimeout(() => {
-            resolve();
-            }, time);
-        });
-        };
-
-        return new Promise(async resolve => {
-        let lastResult;
-
-        for (let retry = 1; retry <= retries; retry++) {
-            const result = (lastResult = await this.executeRequest(options));
-
-            const shouldRetry = retryCallback(result);
-
-            if (shouldRetry !== true) {
-            resolve(result);
-            return;
-            }
-
-            if (this.logger) {
-            const debug = JSON.stringify([
-                options.url ? options.url : '',
-                result && result.response && result.response.statusCode ? result.response.statusCode : '',
-                options.body ? options.body.substring(0, 50) : ''
-            ]);
-
-            this.logger.error(`Request: error retry (${retry}) in ${retryMs}ms ${debug}`);
-            }
-
-            await wait(retryMs);
-        }
-
-        resolve(lastResult);
         });
     }
 };

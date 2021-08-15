@@ -323,7 +323,8 @@ module.exports = {
         this.getLogger(),
         this.getQueue(),
         this.getCandleImporter(),
-        this.getThrottler()
+        this.getThrottler(),
+        this.getRequestClient()
       ),
       new Bybit(
         this.getEventEmitter(),

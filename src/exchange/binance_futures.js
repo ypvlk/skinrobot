@@ -3,8 +3,6 @@ const ccxt = require('ccxt');
 
 const moment = require('moment');
 const _ = require('lodash');
-const querystring = require('querystring');
-const f = require('node-fetch');
 
 const Candlestick = require('./../dict/candlestick');
 const Ticker = require('../dict/ticker');
@@ -18,12 +16,13 @@ const ExchangePositionEvent = require('../event/exchange_position_event');
 
 
 module.exports = class BinanceFutures {
-    constructor(eventEmitter, logger, queue, candleImport, throttler) {
+    constructor(eventEmitter, logger, queue, candleImport, throttler, requestClient) {
         this.eventEmitter = eventEmitter;
         this.logger = logger;
         this.queue = queue;
         this.candleImport = candleImport;
         this.throttler = throttler;
+        this.requestClient = requestClient;
         
         
         this.tickers = {};
@@ -48,67 +47,6 @@ module.exports = class BinanceFutures {
         return 1000;
     }
 
-    backfillCandles(symbol, period, startTime) { //backfillCandles
-        return new Promise((resolve, reject) => {
-            const query = querystring.stringify({
-                interval: period,
-                symbol: symbol.toUpperCase(),
-                limit: this.getLimit(),
-                startTime: moment(startTime * 1000).unix()
-            });
-            
-            f(`${this.getBaseUrl()}/fapi/v1/klines?${query}`)
-                .then(res => {
-                    if (!res.ok) throw new Error(`${JSON.stringify(res.statusText)}`);
-                    return res.json();
-                })
-                .then(body => {
-                    if (!Array.isArray(body)) {
-                        throw `Binance Futures: bodymust be an array: ${JSON.stringify(body)}`;
-                    }
-                    
-                    resolve(body.map(candle => {
-                        return new Candlestick(
-                            moment(candle[0]).format('X'),
-                            candle[1],
-                            candle[2],
-                            candle[3],
-                            candle[4],
-                            BinanceFutures.formatVolume(candle[5]),
-                            candle[6]
-                        );
-                    }))
-                })
-                .catch(err => {throw new Error(`Binance Futures: Candle backfill error: ${String(err)}`)})
-        })        
-    }
-
-    getCloses(symbol, period, time) {
-        return new Promise((resolve, reject) => {
-            const query = querystring.stringify({
-                interval: period,
-                symbol: symbol,
-                limit: 1,
-                // startTime: new Date() / 1 - 86400000
-                endTime: time//new Date() / 1 - 86400000
-            });
-            
-            f(`${this.getBaseUrl()}/fapi/v1/klines?${query}`)
-                .then(res => {
-                    if (!res.ok) throw new Error(`${JSON.stringify(res.statusText)}`);
-                    return res.json();
-                })
-                .then(body => {
-                    if (!Array.isArray(body)) throw `Binance Futures: body must be an array: ${JSON.stringify(body)}`;
-                    if (body.length === 0) throw `Binance Futures: empty response: ${JSON.stringify(body)}`;
-                    
-                    resolve(Number(body[0][4]));
-                    // resolve(body.map(candle => candle[4]))
-                })
-                .catch(err => {throw new Error(`Binance Futures: getCloses method error: ${String(err)}`)})
-        }) 
-    }
-
     start(config, symbols) {
 
         this.ccxtClient = new ccxt.binance({
@@ -126,14 +64,20 @@ module.exports = class BinanceFutures {
                     || 
                     (new Date().getUTCHours() === 0 && new Date().getUTCMinutes() < 5 && !me.closesWasUpdate)
                 ) { 
-                    await me.saveCloses(symbols);
+
+                    me.throttler.addTask('binance_futures_closes_update', async () => {
+                        await me.saveCloses(symbols);
+                    }, 1000);
+
                     me.closesWasUpdate = true;
+
+                    
                     
                     me.throttler.addTask('binance_futures_closes_was_update', async () => {
                         me.closesWasUpdate = false;
                     }, 1000 * 60 * 6);
                 }
-            }, 1000);
+            }, 1000 * 5);
             
             setInterval(async () => {
                 me.throttler.addTask('binance_futures_sync_orders', async () => {
@@ -166,6 +110,74 @@ module.exports = class BinanceFutures {
         } else {
             me.logger.info('Binance Futures: Starting as anonymous; no trading possible');
         }
+    }
+
+    async backfillCandles(symbol, period, startTime) { //backfillCandles
+        const options = {
+            interval: period,
+            symbol: symbol.toUpperCase(),
+            limit: this.getLimit(),
+            startTime: moment(startTime * 1000).unix()
+        };
+
+        const uri = `${this.getBaseUrl()}/fapi/v1/klines`;
+
+        let result = [];
+
+        try {
+            result = await this.requestClient.executeGETRequest(uri, options);
+        } catch (err) {
+            this.logger.error(`Binance Futures: Candle backfill request error: ${String(err)}`);
+        }
+        
+        if (!Array.isArray(result)) {
+            this.logger.error(`Binance Futures: result must be an array: ${JSON.stringify(result)}`);
+            return [];
+        }
+
+        return result.map(candle => {
+            return new Candlestick(
+                moment(candle[0]).format('X'),
+                candle[1],
+                candle[2],
+                candle[3],
+                candle[4],
+                BinanceFutures.formatVolume(candle[5]),
+                candle[6]
+            );
+        })  
+    }
+
+    async getCloses(symbol, period, time) {
+        const options = {
+            interval: period,
+            symbol: symbol,
+            limit: 1,
+            // startTime: new Date() / 1 - 86400000
+            endTime: time//new Date() / 1 - 86400000
+        };
+
+        const uri = `${this.getBaseUrl()}/fapi/v1/klines`;
+
+        let result = [];
+
+        try {
+            result = await this.requestClient.executeGETRequest(uri, options);
+        } catch (err) {
+            this.logger.error(`Binance Futures:  Get closes request error: ${String(err)}`);
+        }
+        
+        if (!Array.isArray(result)) {
+            this.logger.error(`Binance Futures: Result must be an array: ${JSON.stringify(result)}`);
+            return [];
+        }
+
+        if (result.length === 0) {
+            this.logger.error(`Binance Futures: Get closes empty response: ${JSON.stringify(body)}`);
+            return [];
+        }
+
+        return (Number(result[0][4]));
     }
 
     async saveCloses(symbols) {

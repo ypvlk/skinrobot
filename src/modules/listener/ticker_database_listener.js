@@ -17,7 +17,6 @@ module.exports = class TickerDatabaseListener {
 
             if (tickers.length > this.count - 1) {
                 for (const chunk of _.chunk(tickers, 100)) {
-                    console.log('Saving tickers into db...');
                     await tickerRepository.insertTickers(chunk, this.delay);
                 }
             }

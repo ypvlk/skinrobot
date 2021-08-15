@@ -29,7 +29,7 @@ module.exports = class TickersStreamService {
 
         this.is_test = true;
         this.nullify = false;
-        this.exchange_commission = 0.08;
+        this.exchange_commission = 0.08; //TODO
     }
 
     init(options) {
@@ -54,13 +54,13 @@ module.exports = class TickersStreamService {
                 symbol: pair.symbol
             }));
 
-            const date = new Date(date) / 1;
+            const parse_date = new Date(date) / 1;
 
             for (let k = 0; k < _opt.length; k++) {
                 _opt[k].nullify = true; //Этот ключ означает что начинаем с новыми параметрами
 
-                let startTime = moment(date).utc().startOf('day').unix() * 1000; 
-                let endTime = moment(date).utc().endOf('day').unix() * 1000; 
+                let startTime = moment(parse_date).utc().startOf('day').unix() * 1000; 
+                let endTime = moment(parse_date).utc().endOf('day').unix() * 1000; 
 
                 let tickersFromDB;
                 
@@ -103,10 +103,10 @@ module.exports = class TickersStreamService {
                             j = j + 2;
                             
                             me.eventEmitter.emit('tick', _opt[k]);
+
+                            _opt[k].nullify = false; //Это поменял нужно проверить работает так или нет(был над while)
                         }
                     }
-
-                    _opt[k].nullify = false;
 
                 } while (tickersFromDB && tickersFromDB.length > limit - 1); 
 
@@ -186,8 +186,8 @@ module.exports = class TickersStreamService {
                     correction_indicator_changes: corrections[i],
                     get_position_change_tier_1: get_positions[j],
                     take_profit_position_change: +options.take_profit,
-                    is_test: this.is_test,
-                    nullify: this.nullify,
+                    is_test: true,
+                    nullify: false,
                     commission: +options.exchange_commission
                 });
             }

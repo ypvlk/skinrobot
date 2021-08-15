@@ -27,12 +27,12 @@ module.exports = class CsvExportHttp {
         const csvParser = new Parser({ fields });
         const csv = csvParser.parse(data); //[это массив обьектов]
 
-        fs.writeFileSync(`${path}.csv`, csv, function(err) {
+        fs.writeFileSync(`${path}`, csv, function(err) {
             if (err) this.logger.error(`Write save into file sync error: ${String(err)}`);
         });
 
-        this.logger.info(`File: ${path}.csv saved.`);
-        console.log(`File ${path}.csv saved.`);
+        this.logger.info(`File: ${path} saved.`);
+        console.log(`File ${path} saved.`);
     }
 
     async downloadOnePairCandles(exchange, symbol, period, start, end, limit) {
