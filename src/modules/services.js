@@ -521,7 +521,8 @@ module.exports = {
       this.getExchangeManager(),
       this.getOrders(),
       this.getPositions(),
-      this.getSystemUtil()
+      this.getSystemUtil(),
+      this.getThrottler()
     ));
   },
 
@@ -631,7 +632,9 @@ module.exports = {
         this.getPositions(),
         this.getActionListener(),
         this.getBalances(),
-        this.getActionDatabaseListener()
+        this.getActionDatabaseListener(),
+        this.getCsvExportHttp(),
+        parameters.projectDir
       );
   },
 

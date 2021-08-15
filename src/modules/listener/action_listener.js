@@ -8,7 +8,8 @@ module.exports = class ActionListener {
         exchangeManager,
         orders,
         positions,
-        systemUtil
+        systemUtil,
+        throttler
     ) {
         this.eventEmitter = eventEmitter;
         this.logger = logger;
@@ -16,6 +17,7 @@ module.exports = class ActionListener {
         this.orders = orders;
         this.positions = positions;
         this.systemUtil = systemUtil;
+        this.throttler = throttler;
     }
 
     async onActions(actions) {
@@ -30,7 +32,7 @@ module.exports = class ActionListener {
             }
         });
 
-        await this.runPromiseAll(promises);
+        await this.executePromises(promises);
     }
 
     executeAction(action) {
@@ -94,7 +96,7 @@ module.exports = class ActionListener {
             promises.push(exchange.closeOnePosition(positions[p])); //TODO
         }
 
-        await me.runPromiseAll(promises);
+        await me.executePromises(promises);
     }
 
     onCancelAll(exchangeName, symbol) { //Отменяем все ордера всех стаков на одной бирже
@@ -106,7 +108,7 @@ module.exports = class ActionListener {
 
     }
 
-    async runPromiseAll(promises, retry = 0) {
+    async executePromises(promises, retry = 0) {
         let result;
 
         if (promises && promises.length === 0 ) return undefined;
@@ -119,21 +121,26 @@ module.exports = class ActionListener {
         if (retry > 0) this.logger.info(`Retry (${retry}) sending actions`);
         
         try {
-            console.log('Send actions to exchange...');
-            result = await Promise.all(promises); //allSettled
+            result = await Promise.allSettled(promises); //allSettled
         } catch(e) {
-            this.logger.error(`On run promise all error: ${e}`);
-            console.log(`On run promise all error: ${e}`);
+            this.logger.error(`On run promise allSettled error: ${e}`);
+        }
 
+        const me = this;
 
-            //TODO
-            //проверить какие промисы не исполнелись
+        if (result && result.length) {
+            let new_promises = [];
 
-            setTimeout(async () => {
-                await this.runPromiseAll(promises, ++retry);
-            }, this.systemUtil.getConfig('settings.order.retry_ms', 500));
-        
-            return undefined;
+            result.forEach((p, index) => {
+                if (p.status === 'rejected') {
+                    new_promises.push(promises[index]);
+                    
+                    //Retry rejected promises
+                    me.throttler.addTask('action_listener_execute_promise', async () => {
+                        await me.executePromises(new_promises, ++retry);
+                    }, me.systemUtil.getConfig('settings.retry_ms', 1000));
+                }
+            });
         }
 
     }

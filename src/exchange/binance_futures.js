@@ -198,8 +198,10 @@ module.exports = class BinanceFutures {
     }
 
     async order(order) {
+        const { symbol } = order;
+
         return this.ccxtClient.createOrder(
-            order.symbol.replace('USDT', '/USDT'), 
+            order.symbol.replace('BUSD', '/BUSD'), 
             order.type, 
             order.side === 'long' ? 'buy' : 'sell', 
             order.amount
@@ -212,7 +214,7 @@ module.exports = class BinanceFutures {
 
     async closeOnePosition(position) {
         return this.ccxtClient.createOrder(
-            position.symbol.replace('USDT', '/USDT'),
+            position.symbol.replace('BUSD', '/BUSD'),
             'market',
             position.side === 'long' ? 'sell' : 'buy',
             position.amount < 0 ? (-1) * position.amount : position.amount
