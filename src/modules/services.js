@@ -436,7 +436,12 @@ module.exports = {
       return monitoringService;
     }
 
-    return (monitoringService = new MonitoringService());
+    return (monitoringService = new MonitoringService(
+      this.getBalances(),
+      this.getOrders(),
+      this.getPositions(),
+      this.getTickers(),
+    ));
   },
 
   getSignalDatabaseListener: function() {
@@ -600,8 +605,6 @@ module.exports = {
   },
 
   createWebserverInstance: function() {
-    this.getMonitoringService().init();
-
     return new Http(
       this.getSystemUtil(),
       this.getLogger(),
@@ -619,6 +622,7 @@ module.exports = {
       this.getSystemUtil(),
       this.getLogger(),
       this.getTickers(),
+      this.getMonitoringService(),
       parameters.projectDir,
     );
   },
@@ -626,7 +630,6 @@ module.exports = {
   createTradeInstance: function() {
       this.getStrategyManager().init();
       this.getExchangeManager().init();
-      this.getMonitoringService().init();
 
       return new Trade(
         this.getEventEmitter(),
@@ -654,7 +657,6 @@ module.exports = {
   createWatchInstance: function() {
       this.getStrategyManager().init();
       this.getExchangeManager().init();
-      this.getMonitoringService().init();
 
       return new Watch(
         this.getEventEmitter(),

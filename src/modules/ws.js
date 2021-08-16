@@ -6,12 +6,14 @@ module.exports = class Ws {
     constructor(
         systemUtil,
         logger,
-        tickers,
+        tickers, //TODO delte tickers
+        monitoringService,
         projectDir
     ) {
         this.systemUtil = systemUtil;
         this.logger = logger;
         this.tickers = tickers;
+        this.monitoringService = monitoringService;
         this.projectDir = projectDir;
     }
 
@@ -44,10 +46,21 @@ module.exports = class Ws {
 
             ws.on('message', async event => {
                 const body = JSON.parse(event);
+
+                if (body.event === 'monitoring') {
+                    setInterval(async () => {
+                        const data = me.monitoringService.all();
+                        webSocketServer.clients.forEach(client => {
+                            if (client.readyState === WebSocket.OPEN) {
+                                client.send(JSON.stringify(data));
+                            }
+                        });
+                    }, 1000 * 5);
+                }
                 
                 if (body.event === 'correlation') {
                     setInterval(async () => {
-                        const data = this.tickers.all();
+                        const data = this.tickers.all(); //TODO delete tickers
                         webSocketServer.clients.forEach(client => {
                             if (client.readyState === WebSocket.OPEN) {
                                 client.send(JSON.stringify(data));
