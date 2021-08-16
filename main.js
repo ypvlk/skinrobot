@@ -1,4 +1,3 @@
-// https://github.com/Haehnchen/crypto-trading-bot
 
 const program = require('commander');
 const TradeCommand = require('./src/command/trade');

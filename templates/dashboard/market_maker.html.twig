@@ -1,0 +1,67 @@
+
+{% block market_maker %}
+    <div class="card card-primary">
+        <div class="card-header">
+            <h3 class="card-title">Market Maker</h3>
+        </div>
+
+        <form action="/orders/" method="post" role="form">
+            <div class="card-body">
+                {% if alert is defined %}
+                    {% include '../components/alert.html.twig' with {'alert': alert} %}
+                {% endif %}
+
+                <div class="row">
+                    <div class="col-8">
+                        <div class="form-group">
+                            <label for="price">Price</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="price" placeholder="Price" aria-label="Price" name="price" aria-describedby="basic-addon2" value="{{ form.price|default }}">
+                                {# <div class="input-group-append percent-input-group">
+                                    <button class="btn btn-outline-secondary" type="button" value="0.5">+0.5%</button>
+                                    <button class="btn btn-outline-secondary" type="button" value="1">+1%</button>
+                                    <button class="btn btn-outline-secondary" type="button" value="-0.5">-0.5%</button>
+                                    <button class="btn btn-outline-secondary" type="button" value="-1">-1%</button>
+                                </div> #}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="form-group">
+                            <label for="order_type">Type</label>
+                            <select class="form-control" id="order_type" name="type">
+                                <option value="market" {% if form.type is not defined or form.type|default == 'market' %}selected{% endif %}>market</option>
+                                <option value="limit" {% if form.type|default == 'limit' %}selected{% endif %}>limit</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row form-group-amount">
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label for="amount">Amount (Asset)</label>
+                            <input type="text" class="form-control" id="amount" aria-label="Amount" name="amount" aria-describedby="basic-addon2" value="{{ form.amount|default }}">
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label for="amount">Amount (Currency)</label>
+                            <input type="text" class="form-control" id="amount_currency" aria-label="Amount" name="amount_currency" aria-describedby="basic-addon2" value="{{ form.amount_currency|default }}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-footer">
+                <button type="submit" class="btn btn-success" name="side" value="long"><i class="fas fa-shopping-cart"></i> Buy</button>
+                &nbsp;
+                <button type="submit" class="btn btn-danger" name="side" value="short"><i class="far fa-trash-alt"></i> Sell</button>
+            </div>
+        </form>
+    </div>
+{% endblock market_maker %}
+
+{% block javascript %}
+
+{% endblock javascript %}

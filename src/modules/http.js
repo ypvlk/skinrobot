@@ -98,7 +98,7 @@ module.exports = class Http {
             };
 
             res.render(
-                '../templates/dashboard.html.twig',
+                '../templates/dashboard/dashboard.html.twig',
                 {host: host, port: port}
                 // await ta.getTaForPeriods(this.systemUtil.getConfig('dashboard.periods', ['15m', '1h']))
             );
