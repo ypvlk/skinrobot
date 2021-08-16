@@ -1,8 +1,5 @@
 <!DOCTYPE html>
-<!--
-This is a starter template page. Use this page to start your new project from
-scratch. This page gets rid of all links and provides the needed markup only.
--->
+
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -11,14 +8,17 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
     <title>{% block title %}Dashboard | Crypto Bot{% endblock %}</title>
 
-    <link rel="icon" href="{{ '/favicon.ico' }}"/>
+    {# <link rel="icon" href="{{ '/favicon.ico' }}"/> #}
 
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css">
+
     <!-- Theme style -->
     <link rel="stylesheet" href="{{ '/css/adminlte.min.css' }}">
+
     <!-- style -->
     <link rel="stylesheet" href="{{ '/css/style.css' }}">
+
     <!-- Google Font: Source Sans Pro -->
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
 
@@ -33,9 +33,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <div class="container">
                 <a href="{{ '/' }}" class="navbar-brand">
                     {# <img src="{{ '/img/bitcoin.svg' }}" alt="Crypto Trading Bot Logo" class="brand-image img-circle elevation-1" #}
-                    <img src alt="Bot" class="brand-image img-circle elevation-1" style="opacity: .8">
+                    {# <img src alt="Bot" class="brand-image img-circle elevation-1" style="opacity: .8"> #}
                     <span class="brand-text font-weight-light">Crypto</span>
                 </a>
+                <!-- Toggle button -->
                 <button class="navbar-toggler order-1" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -46,12 +47,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <li class="nav-item">
                             <a href="{{ '/' }}" class="nav-link">Dashboard</a>
                         </li>
-                        <li class="nav-item">
+                        {# <li class="nav-item">
                             <a href="{{ '/changes' }}" class="nav-link">Changes</a>
                         </li>
                         <li class="nav-item">
                             <a href="{{ '/correlation' }}" class="nav-link">Correlation</a>
-                        </li>
+                        </li> #}
                         {# <li class="nav-item">
                             <a href="{{ '/tickers' }}" class="nav-link">Ticker</a>
                         </li>
@@ -95,11 +96,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
 <!-- jQuery -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
 <!-- Bootstrap 4 -->
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+
 <!-- AdminLTE App -->
 <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
 <script src="/js/adminlte.min.js?v={{ asset_version() }}"></script>
+
 <script>
     // Add Active Navigation Class Based on URL to Menu Item
     $(function () {
@@ -111,6 +115,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         });
     })
 </script>
+
 {% block javascript %}{% endblock javascript %}
 
 </body>

@@ -29,15 +29,13 @@ module.exports = class MonitoringService {
         // this.average_position_lose = 0;
     }
 
-
-
     all() {
         return {
             balances: this.balancesStorage.all(),
             orders: this.ordersStorage.all(),
             positions: this.positionsStorage.all(),
             tickers: this.tickersStorage.all(),
-            
+
         }
     }
 

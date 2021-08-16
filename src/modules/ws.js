@@ -36,12 +36,15 @@ module.exports = class Ws {
             });
 
             ws.on('close', (event) => {
-                me.logger.error(
-                    `WebSocket: Connection closed: ${JSON.stringify([
-                        event.code,
-                        event.message
-                    ])}`
-                );
+                if (event && event.code && event.message) {
+                    me.logger.error(`WebSocket: Connection closed: ${JSON.stringify([
+                            event.code,
+                            event.message
+                        ])}`
+                    );
+                }
+
+                console.log(`WebSocket: Connection closed: ${JSON.stringify(event)}`);
             });
 
             ws.on('message', async event => {
@@ -55,7 +58,7 @@ module.exports = class Ws {
                                 client.send(JSON.stringify(data));
                             }
                         });
-                    }, 1000 * 5);
+                    }, 1000 * 10);
                 }
                 
                 if (body.event === 'correlation') {

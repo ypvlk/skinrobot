@@ -90,9 +90,16 @@ module.exports = class Http {
         //     res.json({ success: true, message: '(>___<)' })
         // });
         app.get('/', async (req, res) => {
+            const host = this.systemUtil.getConfig('webserver.ip', '0.0.0.0');
+            const port = this.systemUtil.getConfig('webserver.ws_port', 3001);
+
+            const options = {
+                //сюда я передам все основные данные про бота которые нужно достать с базы или с настроек(без веб сокета)
+            };
+
             res.render(
-                '../templates/base.html.twig',
-                {message: 'Hello'}
+                '../templates/dashboard.html.twig',
+                {host: host, port: port}
                 // await ta.getTaForPeriods(this.systemUtil.getConfig('dashboard.periods', ['15m', '1h']))
             );
         });
