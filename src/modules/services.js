@@ -41,6 +41,7 @@ const MeanReversionRepository = require('./repository/mean_reversion_repository'
 const ExchangeManager = require('./exchange/exchange_manager');
 const StrategyManager = require('./strategy/strategy_manager');
 const TickersStreamService = require('./backtesting/tickers_stream_service');
+const MonitoringService = require('./monitoring/monitoring');
 
 const TickListener = require('../modules/listener/tick_listener');
 const SignalListener = require('../modules/listener/signal_listener');
@@ -100,6 +101,7 @@ let actionDatabaseListener;
 let actionRepository;
 let tickersStreamService;
 let backtestingStorage;
+let monitoringService;
 
 const parameters = {};
 
@@ -429,6 +431,14 @@ module.exports = {
     return (backtestingStorage = new BacktestingStorage());
   },
 
+  getMonitoringService: function() {
+    if (monitoringService) {
+      return monitoringService;
+    }
+
+    return (monitoringService = new MonitoringService());
+  },
+
   getSignalDatabaseListener: function() {
     if (signalDatabaseListener) {
       return signalDatabaseListener;
@@ -590,6 +600,8 @@ module.exports = {
   },
 
   createWebserverInstance: function() {
+    this.getMonitoringService().init();
+
     return new Http(
       this.getSystemUtil(),
       this.getLogger(),
@@ -614,6 +626,7 @@ module.exports = {
   createTradeInstance: function() {
       this.getStrategyManager().init();
       this.getExchangeManager().init();
+      this.getMonitoringService().init();
 
       return new Trade(
         this.getEventEmitter(),
@@ -641,6 +654,7 @@ module.exports = {
   createWatchInstance: function() {
       this.getStrategyManager().init();
       this.getExchangeManager().init();
+      this.getMonitoringService().init();
 
       return new Watch(
         this.getEventEmitter(),
