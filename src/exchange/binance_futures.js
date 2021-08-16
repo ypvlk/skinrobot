@@ -182,7 +182,7 @@ module.exports = class BinanceFutures {
 
             for (const symbol of symbols) {
                 this.closes[`${symbol.symbol}`] = await me.getCloses(symbol.symbol, period, time);
-                console.log('Итерация в цикле. Должно быть две подряд и первые чем ниже текст'); //TODO
+                console.log('Итерация в цикле. Должно быть две подряд и первее чем ниже текст'); //TODO
             }
 
             console.log('обновляем флаг'); //TODO
@@ -198,10 +198,10 @@ module.exports = class BinanceFutures {
     }
 
     async order(order) {
-        const { symbol } = order;
+        const symbol = BinanceFutures.convertOrderSymbol(order.symbol);
 
         return this.ccxtClient.createOrder(
-            order.symbol.replace('BUSD', '/BUSD'), 
+            symbol, 
             order.type, 
             order.side === 'long' ? 'buy' : 'sell', 
             order.amount
@@ -628,6 +628,16 @@ module.exports = class BinanceFutures {
             return (
                 (pnl / entryPrice) * 100
             );
+        }
+    }
+
+    static convertOrderSymbol(symbol) {
+        if (symbol.includes('USDT', 1)) {
+            return symbol.replace('USDT', '/USDT')
+        }
+        
+        if (symbol.includes('BUSD', 1)) {
+            return symbol.replace('BUSD', '/BUSD')
         }
     }
 
