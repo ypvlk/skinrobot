@@ -1,5 +1,5 @@
 
-module.exports = class BacktestingStorage {
+module.exports = class BacktestingMonitoringService {
     constructor() {
         this.balance = 0;
         this.balance_with_comm = 0;

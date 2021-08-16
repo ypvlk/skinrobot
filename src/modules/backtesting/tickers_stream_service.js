@@ -11,7 +11,7 @@ module.exports = class TickersStreamService {
         systemUtil, 
         tickerExportHttp,
         tickers,
-        backtestingStorage,
+        backtestingMonitoringService,
         csvExportHttp,
         projectDir
     ) {
@@ -21,7 +21,7 @@ module.exports = class TickersStreamService {
         this.systemUtil = systemUtil;
         this.tickerExportHttp = tickerExportHttp;
         this.tickers = tickers;
-        this.backtestingStorage = backtestingStorage;
+        this.backtestingMonitoringService = backtestingMonitoringService;
         this.csvExportHttp = csvExportHttp;
         this.projectDir = projectDir;
 
@@ -117,19 +117,19 @@ module.exports = class TickersStreamService {
                     get_pos: _opt[k].get_position_change_tier_1,
                     take_profit: _opt[k].take_profit_position_change,
                     e1: '',
-                    all_pos: me.backtestingStorage.getAllPositions(),
-                    plus_pos: me.backtestingStorage.getPositivePositions(),
-                    neg_pos: me.backtestingStorage.getNegativePositions(),
-                    drawdown: me.backtestingStorage.getDrawdown(),
-                    bal: me.backtestingStorage.getBalance(),
-                    bal_comm: me.backtestingStorage.getBalanceWithComm(),
+                    all_pos: me.backtestingMonitoringService.getAllPositions(),
+                    plus_pos: me.backtestingMonitoringService.getPositivePositions(),
+                    neg_pos: me.backtestingMonitoringService.getNegativePositions(),
+                    drawdown: me.backtestingMonitoringService.getDrawdown(),
+                    bal: me.backtestingMonitoringService.getBalance(),
+                    bal_comm: me.backtestingMonitoringService.getBalanceWithComm(),
                     e2: '',
-                    max_pos_profit: me.backtestingStorage.getMaxPositionProfit(),
-                    max_pos_lose: me.backtestingStorage.getMaxPositionLose(),
-                    min_pos_profit: me.backtestingStorage.getMinPositionProfit(),
-                    min_pos_lose: me.backtestingStorage.getMinPositionLose(),
-                    avr_pos_profit: me.backtestingStorage.getAveragePositionProfit(),
-                    avr_pos_lose: me.backtestingStorage.getAveragePositionLose()
+                    max_pos_profit: me.backtestingMonitoringService.getMaxPositionProfit(),
+                    max_pos_lose: me.backtestingMonitoringService.getMaxPositionLose(),
+                    min_pos_profit: me.backtestingMonitoringService.getMinPositionProfit(),
+                    min_pos_lose: me.backtestingMonitoringService.getMinPositionLose(),
+                    avr_pos_profit: me.backtestingMonitoringService.getAveragePositionProfit(),
+                    avr_pos_lose: me.backtestingMonitoringService.getAveragePositionLose()
                 }
 
                 _files.push(me.files_data);

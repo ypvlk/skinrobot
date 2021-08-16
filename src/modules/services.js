@@ -55,7 +55,7 @@ const Tickers = require('../storage/tickers');
 const Orders = require('../storage/orders');
 const Positions = require('../storage/positions');
 const Balances = require('../storage/balances');
-const BacktestingStorage = require('../storage/backtesting');
+const BacktestingMonitoringService = require('./monitoring/backtesting_monitoring');
 
 const Throttler = require('../utils/throttler');
 const Queue = require('../utils/queue');
@@ -100,7 +100,7 @@ let balances;
 let actionDatabaseListener;
 let actionRepository;
 let tickersStreamService;
-let backtestingStorage;
+let backtestingMonitoringService;
 let monitoringService;
 
 const parameters = {};
@@ -423,12 +423,12 @@ module.exports = {
     return (actionRepository = new ActionRepository(this.getDatabase()));
   },
 
-  getBacktestingStorage: function() {
-    if (backtestingStorage) {
-      return backtestingStorage;
+  getBacktestingMonitoringService: function() {
+    if (backtestingMonitoringService) {
+      return backtestingMonitoringService;
     }
 
-    return (backtestingStorage = new BacktestingStorage());
+    return (backtestingMonitoringService = new BacktestingMonitoringService());
   },
 
   getMonitoringService: function() {
@@ -454,7 +454,7 @@ module.exports = {
 
     return (strategyDatabaseListener = new StrategyDatabaseListener(
       this.getMeanReversionRepository(),
-      this.getBacktestingStorage()
+      this.getBacktestingMonitoringService()
     ));
   },
 
@@ -548,7 +548,7 @@ module.exports = {
       this.getSystemUtil(),
       this.getTickerExportHttp(),
       this.getTickers(),
-      this.getBacktestingStorage(),
+      this.getBacktestingMonitoringService(),
       this.getCsvExportHttp(),
       parameters.projectDir,
     ));
