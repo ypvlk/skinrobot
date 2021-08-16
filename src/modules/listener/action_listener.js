@@ -91,12 +91,15 @@ module.exports = class ActionListener {
             if (!exchange) {
                 this.logger.error(`On Terminate: Invalid exchange name: ${exchangeName}`);
                 console.log(`On Terminate: Invalid exchange name: ${exchangeName}`);
+                break;
             }
             
             promises.push(exchange.closeOnePosition(positions[p])); //TODO
         }
 
-        await me.executePromises(promises);
+        if (promises && promises.length > 0) {
+            await me.executePromises(promises);
+        }
     }
 
     onCancelAll(exchangeName, symbol) { //Отменяем все ордера всех стаков на одной бирже

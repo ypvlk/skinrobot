@@ -22,7 +22,9 @@ module.exports = class SignalListener {
 
         signals.forEach(signal => {
             const action = ActionCalculate.calculate(signal);
-            actions.push(action);
+            if (Object.keys(action).length > 0) {
+                actions.push(action);
+            }
         });
 
         if (actions && actions.length > 0) {

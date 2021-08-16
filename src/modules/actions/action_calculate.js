@@ -13,7 +13,7 @@ module.exports = class ActionCalculate {
             case Action.TYPE_CLOSE_ONE:
                 return ActionCalculate.createCloseOneAction(signal);
             default:
-                throw new Error(`Invalid signal action: ${signal.getAction()}`);
+                return {};
         }
     }
 

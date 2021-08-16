@@ -213,12 +213,12 @@ module.exports = class BinanceFutures {
     }
 
     async closeOnePosition(position) {
-        return this.ccxtClient.createOrder(
-            position.symbol.replace('BUSD', '/BUSD'),
-            'market',
-            position.side === 'long' ? 'sell' : 'buy',
-            position.amount < 0 ? (-1) * position.amount : position.amount
-        ); //position: object
+        return this.order({
+            symbol: position.symbol,
+            type: 'market',
+            side: position.side,
+            amount: position.amount < 0 ? (-1) * position.amount : position.amount
+        });
     }
 
     async initPublicWebsocket(symbols) {
