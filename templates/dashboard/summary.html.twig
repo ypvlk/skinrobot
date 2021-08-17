@@ -5,31 +5,21 @@
     <div class="col-md-6">
         <table class="table table-bordered table-sm table-hover backtest-table">
             <tr>
-                <td>Initial Capital</td>
-                <td> $</td>
-            </tr>
-            <tr>
-                <td>
-                    Final Capital
-                </td>
-                <td>
-                    {{ summary.finalCapital }} $
+                <td>Balance </td>
+                <td class="{{ summary.balance > 0 ? 'text-success' : 'text-danger' }}">
+                    {{summary.balance}} %
                 </td>
             </tr>
             <tr>
-                <td>
-                    Net Return on Investment
+                <td>Balance with commision</td>
+                <td class="{{ summary.balance_with_comm > 0 ? 'text-success' : 'text-danger' }}">
+                    {{ summary.balance_with_comm }}
                 </td>
+            </tr>
+            <tr>
+                <td>Drawdown </td>
                 <td class="{{ summary.netProfit > 0 ? 'text-success' : 'text-danger' }}">
-                    {{ summary.netProfit }} %
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    Sharpe Ratio
-                </td>
-                <td>
-                    {{ summary.sharpeRatio }}
+                    {{ summary.drawdown }}
                 </td>
             </tr>
         </table>
@@ -38,35 +28,19 @@
     <div class="col-md-6">
         <table class="table table-bordered table-sm table-hover backtest-table">
             <tr>
-                <td>
-                    Average Return Per Trade
-                </td>
-                <td class="{{ summary.averagePNLPercent > 0 ? 'text-success' : 'text-danger' }}">
-                    {{ summary.averagePNLPercent }} %
+                <td>All Positions </td>
+                <td>{{ summary.all_positions }}</td>
+            </tr>
+            <tr>
+                <td>Positive Positions </td>
+                <td class="text-success">
+                    {{ summary.positive_positions }}
                 </td>
             </tr>
             <tr>
-                <td>
-                    Total Number of Trades
-                </td>
-                <td>
-                    {{ summary.trades.total }}
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    Number of Winning Trades
-                </td>
-                <td>
-                    {{ summary.trades.profitableCount }}
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    Percentage of Winning Trades
-                </td>
-                <td>
-                    {{ summary.trades.profitabilityPercent }}
+                <td>Nagative Positions </td>
+                <td class="text-danger">
+                    {{ summary.negative_positions }}
                 </td>
             </tr>
         </table>

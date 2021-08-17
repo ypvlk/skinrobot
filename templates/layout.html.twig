@@ -74,10 +74,10 @@
                     </ul>
                     <ul class="navbar-nav ml-auto">
                         <li class="nav-item">
-                            <a href="" class="nav-link">HTTP <i class="fas fa-circle"></i></a>
+                            <a href="" class="nav-link">HTTP <i id="http_status" class="fas fa-circle"></i></a>
                         </li>
                         <li class="nav-item">
-                            <a href="" class="nav-link">WebSocket <i class="fas fa-circle"></i></a>
+                            <a href="" class="nav-link">WebSocket <i id="ws_status" class="fas fa-circle"></i></a>
                         </li>
                     </ul>
                 </div>
@@ -122,6 +122,22 @@
             }
         });
     })
+</script>
+
+<script>
+    //Change indicator statuses
+    $(function () {
+        const httpStatus = true;
+        const wsStatus = true;
+
+        $('#http_status').each(function() {
+            if (httpStatus) $(this).css({ color: "green" });
+        })
+
+        $('#ws_status').each(function() {
+            if (wsStatus) $(this).css({ color: "green" });
+        })
+    });
 </script>
 
 {% block javascript %}{% endblock javascript %}
