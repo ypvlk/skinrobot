@@ -44,8 +44,7 @@ module.exports = class Watch {
         this.csvExportHttp = csvExportHttp;
         this.projectDir = projectDir;
 
-        this.end_day_pause = false;
-        // this.action_pause = false;
+        this.pause = false;
     }
 
     start(options) {
@@ -86,20 +85,9 @@ module.exports = class Watch {
             me.logger.info('Trade module: warmup done; starting ticks');
 
             setInterval(() => {
-                const date = new Date();
-                //TODO нужно что то сделать с этой паузуй там
-                if (
-                    date.getUTCHours() === 23 && 
-                    date.getUTCMinutes() >= 45 && 
-                    date.getUTCMinutes() <= 55 && 
-                    !me.end_day_pause
-                ) {
-                    me.end_day_pause = true;
-                    setTimeout(() => { me.end_day_pause = false;}, 1000 * 60 * 14);
-                    me.saveTickersTableIntoFile();
-                }
+                me.checkTimeToPause();
 
-                if (!me.end_day_pause) me.tickListener.onTick();
+                if (!me.pause) me.tickListener.onTick();
 
             }, me.systemUtil.getConfig('settings.on_tick_time', 1000));
 
@@ -163,10 +151,25 @@ module.exports = class Watch {
             await me.actionListener.onActions(actionsEvent.actions);
         });
 
-        // eventEmitter.on('trade_pause', pause => {
-        //     me.action_pause = pause.pause;
-        // });
+        eventEmitter.on('trade_pause', pause => {
+            me.pause = pause.pause;
+        });
         
+    }
+
+    checkTimeToPause() {
+        const date = new Date();
+        //TODO нужно что то сделать с этой паузуй там
+        if (
+            date.getUTCHours() === 23 && 
+            date.getUTCMinutes() >= 45 && 
+            date.getUTCMinutes() <= 55 && 
+            !this.pause
+        ) {
+            this.pause = true;
+            setTimeout(() => { this.pause = false;}, 1000 * 60 * 14);
+            this.saveTickersTableIntoFile();
+        }
     }
 
     saveTickersTableIntoFile() {

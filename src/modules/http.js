@@ -435,23 +435,23 @@ module.exports = class Http {
             res.json({ success: true, data: options });
         });
 
-        // app.get('/trade/pause', async (req, res) => {
-        //     //localhost:3000/trade/pause?turn=off
+        app.get('/trade/pause', async (req, res) => {
+            //localhost:3000/trade/pause?turn=off
             
-        //     const { turn } = req.query;
+            const { turn } = req.query;
 
-        //     if (!turn) res.status(400).end('Error: turn query params is allowed');
+            if (!turn) res.status(400).end('Error: turn query params is allowed');
 
-        //     if (turn === 'on') {
-        //         this.eventEmitter.emit('trade_pause', {pause: false});
-        //     } else if (turn === 'off') {
-        //         this.eventEmitter.emit('trade_pause', {pause: true});
-        //     } else {
-        //         res.status(400).end('Error: turn query params is bad value');
-        //     }
+            if (turn === 'on') {
+                this.eventEmitter.emit('trade_pause', {pause: false});
+            } else if (turn === 'off') {
+                this.eventEmitter.emit('trade_pause', {pause: true});
+            } else {
+                res.status(400).end('Error: turn query params is bad value');
+            }
 
-        //     res.json({ success: true, message: `Robot was ${turn}ed` });
-        // });
+            res.json({ success: true, message: `Robot was ${turn}ed` });
+        });
 
         app.post('/positions/close-all', async (req, res) => {
             //localhost:3000/positions/close-all
