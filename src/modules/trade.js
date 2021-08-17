@@ -44,7 +44,8 @@ module.exports = class Watch {
         this.csvExportHttp = csvExportHttp;
         this.projectDir = projectDir;
 
-        this.pause = false;
+        this.end_day_pause = false;
+        // this.action_pause = false;
     }
 
     start(options) {
@@ -91,14 +92,14 @@ module.exports = class Watch {
                     date.getUTCHours() === 23 && 
                     date.getUTCMinutes() >= 45 && 
                     date.getUTCMinutes() <= 55 && 
-                    !me.pause
+                    !me.end_day_pause
                 ) {
-                    me.pause = true;
-                    setTimeout(() => { me.pause = false;}, 1000 * 60 * 14);
+                    me.end_day_pause = true;
+                    setTimeout(() => { me.end_day_pause = false;}, 1000 * 60 * 14);
                     me.saveTickersTableIntoFile();
                 }
 
-                if (!me.pause) me.tickListener.onTick();
+                if (!me.end_day_pause) me.tickListener.onTick();
 
             }, me.systemUtil.getConfig('settings.on_tick_time', 1000));
 
@@ -161,6 +162,10 @@ module.exports = class Watch {
             // await me.actionDatabaseListener.insertActions(actionsEvent);
             await me.actionListener.onActions(actionsEvent.actions);
         });
+
+        // eventEmitter.on('trade_pause', pause => {
+        //     me.action_pause = pause.pause;
+        // });
         
     }
 

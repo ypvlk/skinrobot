@@ -8,6 +8,9 @@ const moment = require('moment');
 const os = require('os');
 const fs = require('fs');
 
+const SignalEvent = require('../event/signal_event');
+const Signal = require('../dict/signal');
+
 module.exports = class Http {
     constructor(
         systemUtil,
@@ -17,6 +20,7 @@ module.exports = class Http {
         tickerExportHttp,
         csvExportHttp,
         instances,
+        eventEmitter,
         projectDir
     ) {
         this.systemUtil = systemUtil;
@@ -26,6 +30,7 @@ module.exports = class Http {
         this.tickerExportHttp = tickerExportHttp;
         this.csvExportHttp = csvExportHttp;
         this.instances = instances;
+        this.eventEmitter = eventEmitter;
         this.projectDir = projectDir;
     }
 
@@ -86,9 +91,6 @@ module.exports = class Http {
             });
         }
 
-        // app.get('/', async (req, res) => {
-        //     res.json({ success: true, message: '(>___<)' })
-        // });
         app.get('/', async (req, res) => {
             const host = this.systemUtil.getConfig('webserver.ip', '0.0.0.0');
             const port = this.systemUtil.getConfig('webserver.ws_port', 3001);
@@ -391,10 +393,6 @@ module.exports = class Http {
             res.render('../templates/charts.html.twig', options)
         });
 
-        app.get('/backfill', async (req, res) => {
-            res.json({ success: true, message: '(>___<)' })
-        });
-
         app.get('/backfill/candles', async (req, res) => {
             const options = {
                 // pairs: '',//await this.candleExportHttp.getPairs(),
@@ -435,6 +433,56 @@ module.exports = class Http {
             // options.candles_json = JSON.stringify(candles, null, 2);
         
             res.json({ success: true, data: options });
+        });
+
+        // app.get('/trade/pause', async (req, res) => {
+        //     //localhost:3000/trade/pause?turn=off
+            
+        //     const { turn } = req.query;
+
+        //     if (!turn) res.status(400).end('Error: turn query params is allowed');
+
+        //     if (turn === 'on') {
+        //         this.eventEmitter.emit('trade_pause', {pause: false});
+        //     } else if (turn === 'off') {
+        //         this.eventEmitter.emit('trade_pause', {pause: true});
+        //     } else {
+        //         res.status(400).end('Error: turn query params is bad value');
+        //     }
+
+        //     res.json({ success: true, message: `Robot was ${turn}ed` });
+        // });
+
+        app.post('/positions/close-all', async (req, res) => {
+            //localhost:3000/positions/close-all
+            
+            const { positions } = req.body;
+
+            if (!positions) res.status(400).end('Error: positions body param is allowed');
+
+            const strategy = 'mean_reversion';
+
+            this.eventEmitter.emit('tick_signal', 
+                new SignalEvent(
+                    strategy,
+                    undefined,
+                    (positions.map(p => {
+                        return new Signal(
+                            p.exchange,
+                            p.symbol,
+                            p.side === 'short' ? 'long' : 'short',
+                            undefined,
+                            undefined,
+                            undefined,
+                            p.amount,
+                            undefined,
+                            'closeOne'
+                        )
+                    }))
+                )
+            );
+
+            res.json({ success: true, message: `Positions close all action sended` });
         });
         
         const ip = this.systemUtil.getConfig('webserver.ip', '0.0.0.0');

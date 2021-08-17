@@ -613,6 +613,7 @@ module.exports = {
       this.getTickerExportHttp(),
       this.getCsvExportHttp(),
       this.getInstances(),
+      this.getEventEmitter(),
       parameters.projectDir
     );
   },
