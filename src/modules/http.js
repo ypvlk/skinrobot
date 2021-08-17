@@ -439,7 +439,7 @@ module.exports = class Http {
             //localhost:3000/trade/pause?turn=off
             
             const { turn } = req.query;
-
+            console.log('TURN', turn);
             if (!turn) res.status(400).end('Error: turn query params is allowed');
 
             if (turn === 'on') {

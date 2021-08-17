@@ -79,6 +79,12 @@
                         <li class="nav-item">
                             <a href="" class="nav-link">WebSocket <i id="ws_status" class="fas fa-circle"></i></a>
                         </li>
+                        {# <li class="nav-item">
+                            <a href="" class="nav-link">Trade <i id="trade_status" class="fas fa-circle"></i></a>
+                        </li> #}
+                        <li>
+                            <button id="trade_pause_btn" type="button" class="btn btn-default" name="" value="on">Trade <i id="trade_status" class="fas fa-circle"></i></button>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -111,6 +117,7 @@
 <!-- AdminLTE App -->
 <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
 <script src="/js/adminlte.min.js?v={{ asset_version() }}"></script>
+<script src="/js/main.js?v={{ asset_version() }}"></script>
 
 <script>
     // Add Active Navigation Class Based on URL to Menu Item
@@ -129,13 +136,26 @@
     $(function () {
         const httpStatus = true;
         const wsStatus = true;
+        const tradeStatus = true;
 
         $('#http_status').each(function() {
             if (httpStatus) $(this).css({ color: "green" });
         })
 
         $('#ws_status').each(function() {
-            if (wsStatus) $(this).css({ color: "green" });
+            if (wsStatus) {
+                $(this).css({ color: "green" });
+            } else {
+                $(this).css({ color: "red" });
+            }           
+        })
+
+        $('#trade_status').each(function() {
+            if (tradeStatus) {
+                $(this).css({ color: "green" });
+            } else {
+                $(this).css({ color: "red" });
+            }
         })
     });
 </script>

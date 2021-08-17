@@ -152,23 +152,34 @@ module.exports = class Watch {
         });
 
         eventEmitter.on('trade_pause', pause => {
-            me.pause = pause.pause;
+            me.updatePause(pause);
         });
         
     }
 
+    updatePause(pause) {
+        if (pause !== this.pause) {
+            this.pause = pause;
+        }
+    }
+
     checkTimeToPause() {
+        const me = this;
         const date = new Date();
         //TODO нужно что то сделать с этой паузуй там
         if (
             date.getUTCHours() === 23 && 
             date.getUTCMinutes() >= 45 && 
             date.getUTCMinutes() <= 55 && 
-            !this.pause
+            !me.pause
         ) {
-            this.pause = true;
-            setTimeout(() => { this.pause = false;}, 1000 * 60 * 14);
-            this.saveTickersTableIntoFile();
+            me.updatePause(true);
+            
+            setTimeout(() => { 
+                me.updatePause(false);
+            }, 1000 * 60 * 14);
+
+            me.saveTickersTableIntoFile();
         }
     }
 
