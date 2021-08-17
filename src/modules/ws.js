@@ -7,13 +7,11 @@ module.exports = class Ws {
         systemUtil,
         logger,
         tickers, //TODO delte tickers
-        monitoringService,
         projectDir
     ) {
         this.systemUtil = systemUtil;
         this.logger = logger;
         this.tickers = tickers;
-        this.monitoringService = monitoringService;
         this.projectDir = projectDir;
     }
 
@@ -52,7 +50,8 @@ module.exports = class Ws {
 
                 if (body.event === 'monitoring') {
                     setInterval(async () => {
-                        const data = me.monitoringService.all();
+                        // const data = me.monitoringService.all();
+                        const data = {};
                         webSocketServer.clients.forEach(client => {
                             if (client.readyState === WebSocket.OPEN) {
                                 client.send(JSON.stringify(data));

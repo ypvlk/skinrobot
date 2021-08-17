@@ -29,6 +29,11 @@ module.exports = class MonitoringService {
         // this.average_position_lose = 0;
     }
 
+    start() {
+        //Сделать в итоге метод init() который запуститт этот сервис и не убьет его, 
+        //В этом методе будут много разных ивентов отлавливаться с помощью эмитера
+    }
+
     all() {
         return {
             balances: this.balancesStorage.all(),

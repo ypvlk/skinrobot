@@ -10,6 +10,7 @@ const Trade = require('../modules/trade');
 const Http = require('../modules/http');
 const Watch = require('../modules/watch');
 const Ws = require('../modules/ws');
+const Monitoring = require('./monitoring/monitoring');
 
 const BackfillCandles = require('./backfill_candles');
 const BackfillTickers = require('./backfill_tickers');
@@ -41,7 +42,6 @@ const MeanReversionRepository = require('./repository/mean_reversion_repository'
 const ExchangeManager = require('./exchange/exchange_manager');
 const StrategyManager = require('./strategy/strategy_manager');
 const TickersStreamService = require('./backtesting/tickers_stream_service');
-const MonitoringService = require('./monitoring/monitoring');
 
 const TickListener = require('../modules/listener/tick_listener');
 const SignalListener = require('../modules/listener/signal_listener');
@@ -101,7 +101,6 @@ let actionDatabaseListener;
 let actionRepository;
 let tickersStreamService;
 let backtestingMonitoringService;
-let monitoringService;
 
 const parameters = {};
 
@@ -431,19 +430,6 @@ module.exports = {
     return (backtestingMonitoringService = new BacktestingMonitoringService());
   },
 
-  getMonitoringService: function() {
-    if (monitoringService) {
-      return monitoringService;
-    }
-
-    return (monitoringService = new MonitoringService(
-      this.getBalances(),
-      this.getOrders(),
-      this.getPositions(),
-      this.getTickers(),
-    ));
-  },
-
   getSignalDatabaseListener: function() {
     if (signalDatabaseListener) {
       return signalDatabaseListener;
@@ -604,6 +590,15 @@ module.exports = {
     );
   },
 
+  createMonitoringInstance: function() {
+    return new MonitoringService(
+      this.getBalances(),
+      this.getOrders(),
+      this.getPositions(),
+      this.getTickers(),
+    );
+  },
+
   createWebserverInstance: function() {
     return new Http(
       this.getSystemUtil(),
@@ -623,7 +618,6 @@ module.exports = {
       this.getSystemUtil(),
       this.getLogger(),
       this.getTickers(),
-      this.getMonitoringService(),
       parameters.projectDir,
     );
   },

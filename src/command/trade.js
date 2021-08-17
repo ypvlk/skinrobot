@@ -9,6 +9,7 @@ module.exports = class TradeCommand {
 
         if (options.websocket === 'on') {
             services.createWebSocketInstance().start();
+            services.createMonitoringInstance().start();
         }
     }
 };

@@ -8,6 +8,7 @@ module.exports = class ServerCommand {
 
         if (options.websocket === 'on') {
             services.createWebSocketInstance().start();
+            services.createMonitoringInstance().start();
         }
     }
 };

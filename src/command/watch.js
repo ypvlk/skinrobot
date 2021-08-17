@@ -9,6 +9,7 @@ module.exports = class WatchCommand {
 
         if (options.websocket === 'on') {
             services.createWebSocketInstance().start();
+            services.createMonitoringInstance().start();
         }
     }
 };
