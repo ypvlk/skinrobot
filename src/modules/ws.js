@@ -28,6 +28,8 @@ module.exports = class Ws {
         webSocketServer.on('connection', ws => {
             ws.on('error', error => {
                 me.logger.error(`WebSocket: Connection error: ${String(error)}`);
+
+                me.eventEmitter.emit('ws_status', {status: false});
                 
                 setTimeout(() => {
                     me.logger.debug(`Websocket: Connection reconnect`);
@@ -49,14 +51,6 @@ module.exports = class Ws {
 
             ws.on('message', async event => {
                 const body = JSON.parse(event);
-
-                me.eventEmitter.on('indicators', function(data) {
-                    webSocketServer.clients.forEach(client => {
-                        if (client.readyState === WebSocket.OPEN) {
-                            client.send(JSON.stringify(data));
-                        }
-                    });
-                });
 
                 // if (body.event === 'monitoring') {
                 //     setInterval(async () => {
@@ -83,9 +77,19 @@ module.exports = class Ws {
                 //     }, 1000 * 5);
                 // }
             });
+
+            me.eventEmitter.emit('ws_status', {status: true});
         });
 
         me.logger.info(`WebSocket listening on: ${host}:${port}`);
         console.log(`WebSocket listening on: ${host}:${port}`);
+
+        me.eventEmitter.on('indicators', function(indicatorsEvent) {
+            webSocketServer.clients.forEach(client => {
+                if (client.readyState === WebSocket.OPEN) {
+                    client.send(JSON.stringify({'indicators': indicatorsEvent}));
+                }
+            });
+        });
     }
 };

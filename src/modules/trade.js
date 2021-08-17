@@ -84,6 +84,8 @@ module.exports = class Watch {
             console.log('Trade module: warmup done; starting ticks');
             me.logger.info('Trade module: warmup done; starting ticks');
 
+            me.eventEmitter.emit('trade_status', {status: true});
+
             setInterval(() => {
                 me.checkTimeToPause();
 

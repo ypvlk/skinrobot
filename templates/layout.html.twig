@@ -131,35 +131,6 @@
     })
 </script>
 
-<script>
-    //Change indicator statuses
-    $(function () {
-        const httpStatus = true;
-        const wsStatus = true;
-        const tradeStatus = true;
-
-        $('#http_status').each(function() {
-            if (httpStatus) $(this).css({ color: "green" });
-        })
-
-        $('#ws_status').each(function() {
-            if (wsStatus) {
-                $(this).css({ color: "green" });
-            } else {
-                $(this).css({ color: "red" });
-            }           
-        })
-
-        $('#trade_status').each(function() {
-            if (tradeStatus) {
-                $(this).css({ color: "green" });
-            } else {
-                $(this).css({ color: "red" });
-            }
-        })
-    });
-</script>
-
 {% block javascript %}{% endblock javascript %}
 
 </body>

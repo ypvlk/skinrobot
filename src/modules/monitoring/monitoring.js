@@ -22,7 +22,7 @@ module.exports = class MonitoringService {
         this.positive_positions = 0;
         this.negative_positions = 0;
 
-        this.http_status = false;
+        this.http_status = true;
         this.ws_status = false;
         this.trade_status = false;
 
@@ -45,13 +45,7 @@ module.exports = class MonitoringService {
                 ws_status: me.ws_status,
                 trade_status: me.trade_status
             })
-        }, 1000);
-
-        me.eventEmitter.on('http_status', function(statusEvent) {
-            if (statusEvent.status !== me.http_status) {
-                me.http_status = statusEvent.status;
-            }
-        });
+        }, 1000 * 3);
 
         me.eventEmitter.on('ws_status', function(statusEvent) {
             if (statusEvent.status !== me.ws_status) {
