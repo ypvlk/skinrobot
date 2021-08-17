@@ -91,5 +91,13 @@ module.exports = class Ws {
                 }
             });
         });
+
+        me.eventEmitter.on('trades', function(tradesEvent) {
+            webSocketServer.clients.forEach(client => {
+                if (client.readyState === WebSocket.OPEN) {
+                    client.send(JSON.stringify({'trades': tradesEvent}));
+                }
+            });
+        });
     }
 };

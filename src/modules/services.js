@@ -597,7 +597,9 @@ module.exports = {
       this.getOrders(),
       this.getPositions(),
       this.getTickers(),
-      this.getLogger()
+      this.getLogger(),
+      this.getSystemUtil(),
+      this.getInstances()
     );
   },
 

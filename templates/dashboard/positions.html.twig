@@ -1,12 +1,12 @@
 
 {% block positions %}
 
-    {# {% if position %} #}
+    {# {% if positions %} #}
             <div class="card">
                 <div class="card-header border-0">
                     <h3 class="card-title">Positions</h3>
                     <div class="card-tools">
-                    <a href="/orders/{{ pair|url_encode }}/cancel-all" class="btn btn-tool btn-sm" title="Cancel All">
+                    <a href="/positions/cancel-all" id="positions_close_all" class="btn btn-tool btn-sm" title="Cancel All">
                         <i class="fas fa-trash"></i>
                     </a>
                 </div>
@@ -24,8 +24,8 @@
                                 <th>Cancel</th>
                             </tr>
                         </thead>
-                        <tbody>
-                        
+                        <tbody id="table-positions-body">
+                            
                         </tbody>
                     </table>
                 </div>

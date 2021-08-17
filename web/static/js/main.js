@@ -26,8 +26,6 @@ $(document).ready(function() {
             }
         });
     });
-
-
 });
 
 function webSocketConnect() {
@@ -55,6 +53,10 @@ function webSocketConnect() {
             
             if (data && data.indicators) {
                 onIndicatorsMessage(data.indicators);
+            }
+            
+            if (data && data.trades) {
+                onTradesMessage(data.trades);
             }
             
         }
@@ -86,4 +88,61 @@ function onIndicatorsMessage(indicators) {
     $('#trade_pause_btn').each(function() {
         $(this).prop('value', trade_status ? 'on' : 'off');
     });
+}
+
+function onTradesMessage(trades) {
+    //trades: Object
+
+    const {
+        positions, 
+        orders,
+        pairs
+    } = trades;
+
+    //<-----Pairs----->//
+    let pairs_li = '';
+    
+    $.each(pairs, function(key, value) {
+        // <li class="pair-item"><a href="#">binance_future.BTCBUSD/binance_future.ETHBUSD</a></li>
+        pairs_li += `<li class="pair-item"><a href="">${value.exchange}.${value.symbol}</a></li>`;
+    });
+
+    $('#pairs_list_ul').html(pairs_li);
+    //<-----Pairs End----->//
+
+    //<-----Positions----->//
+    let positions_table_body = '';
+    
+    $.each(positions, function(i, value) {
+        let td = '';
+        td += `<td>${value.symbol}</td>`;
+        td += `<td>${value.amount}</td>`;
+        td += `<td>${value.profit}</td>`;
+        td += `<td>${value.price}</td>`;
+        td += `<td>${value.update_at}</td>`;
+        td += `<td>${value.side}</td>`;
+
+        positions_table_body += `<tr>${td}</tr>`;
+    });
+
+    $('#table-positions-body').html(positions_table_body);
+    //<-----Positions End----->//
+
+    //<-----Orders----->//
+    let orders_table_body = '';
+    
+    $.each(orders, function(i, value) {
+        let td = '';
+        td += `<td>${value.symbol}</td>`;
+        td += `<td>${value.amount}</td>`;
+        td += `<td>${value.profit}</td>`;
+        td += `<td>${value.price}</td>`;
+        td += `<td>${value.update_at}</td>`;
+        td += `<td>${value.side}</td>`;
+
+        orders_table_body += `<tr>${td}</tr>`;
+    });
+
+    $('#table-orders-body').html(orders_table_body);
+    //<-----Orders End----->//
 }

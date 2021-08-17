@@ -6,7 +6,9 @@ module.exports = class MonitoringService {
         ordersStorage,
         positionsStorage,
         tickersStorage,
-        logger
+        logger,
+        systemUtil,
+        instances
 
     ) {
         this.eventEmitter = eventEmitter;
@@ -15,6 +17,8 @@ module.exports = class MonitoringService {
         this.positionsStorage = positionsStorage;
         this.tickersStorage = tickersStorage;
         this.logger = logger;
+        this.systemUtil = systemUtil;
+        this.instances = instances;
 
 
         this.drawdown = 0;
@@ -47,6 +51,17 @@ module.exports = class MonitoringService {
             })
         }, 1000 * 3);
 
+        setInterval(() => {
+            me.eventEmitter.emit('trades', {
+                positions: me.positionsStorage.all(),
+                orders: me.ordersStorage.all(),
+                pairs: me.instances.symbols.map(s => ({
+                    exchange: s.exchange,
+                    symbol: s.symbol
+                }))
+            })
+        }, 1000 * 5);
+
         me.eventEmitter.on('ws_status', function(statusEvent) {
             if (statusEvent.status !== me.ws_status) {
                 me.ws_status = statusEvent.status;
@@ -60,15 +75,4 @@ module.exports = class MonitoringService {
         });
 
     }
-
-    // all() {
-    //     return {
-    //         balances: this.balancesStorage.all(),
-    //         orders: this.ordersStorage.all(),
-    //         positions: this.positionsStorage.all(),
-    //         tickers: this.tickersStorage.all(),
-
-    //     }
-    // }
-
 }
