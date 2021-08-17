@@ -7,11 +7,13 @@ module.exports = class Ws {
         systemUtil,
         logger,
         tickers, //TODO delte tickers
+        eventEmitter,
         projectDir
     ) {
         this.systemUtil = systemUtil;
         this.logger = logger;
         this.tickers = tickers;
+        this.eventEmitter = eventEmitter;
         this.projectDir = projectDir;
     }
 
@@ -48,28 +50,38 @@ module.exports = class Ws {
             ws.on('message', async event => {
                 const body = JSON.parse(event);
 
-                if (body.event === 'monitoring') {
-                    setInterval(async () => {
-                        // const data = me.monitoringService.all();
-                        const data = {};
-                        webSocketServer.clients.forEach(client => {
-                            if (client.readyState === WebSocket.OPEN) {
-                                client.send(JSON.stringify(data));
-                            }
-                        });
-                    }, 1000 * 10);
-                }
+                me.eventEmitter.on('indicators', function(data) {
+                    webSocketServer.clients.forEach(client => {
+                        if (client.readyState === WebSocket.OPEN) {
+                            client.send(JSON.stringify(data));
+                        }
+                    });
+                });
+
+                // if (body.event === 'monitoring') {
+                //     setInterval(async () => {
+                //         // const data = me.monitoringService.all();
+                //         const data = {};
+                //         webSocketServer.clients.forEach(client => {
+                //             if (client.readyState === WebSocket.OPEN) {
+                //                 client.send(JSON.stringify(data));
+                //             }
+                //         });
+                //     }, 1000 * 10);
+
+                //     me.eventEmitter.on('');
+                // }
                 
-                if (body.event === 'correlation') {
-                    setInterval(async () => {
-                        const data = this.tickers.all(); //TODO delete tickers
-                        webSocketServer.clients.forEach(client => {
-                            if (client.readyState === WebSocket.OPEN) {
-                                client.send(JSON.stringify(data));
-                            }
-                        });
-                    }, 1000 * 5);
-                }
+                // if (body.event === 'correlation') {
+                //     setInterval(async () => {
+                //         const data = this.tickers.all(); //TODO delete tickers
+                //         webSocketServer.clients.forEach(client => {
+                //             if (client.readyState === WebSocket.OPEN) {
+                //                 client.send(JSON.stringify(data));
+                //             }
+                //         });
+                //     }, 1000 * 5);
+                // }
             });
         });
 

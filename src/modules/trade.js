@@ -154,12 +154,12 @@ module.exports = class Watch {
         eventEmitter.on('trade_pause', pause => {
             me.updatePause(pause);
         });
-        
     }
 
     updatePause(pause) {
         if (pause !== this.pause) {
             this.pause = pause;
+            this.eventEmitter.emit('trade_status', {trade_status: !pause});
         }
     }
 

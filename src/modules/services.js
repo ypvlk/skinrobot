@@ -591,11 +591,13 @@ module.exports = {
   },
 
   createMonitoringInstance: function() {
-    return new MonitoringService(
+    return new Monitoring(
+      this.getEventEmitter(),
       this.getBalances(),
       this.getOrders(),
       this.getPositions(),
       this.getTickers(),
+      this.getLogger()
     );
   },
 
@@ -618,6 +620,7 @@ module.exports = {
       this.getSystemUtil(),
       this.getLogger(),
       this.getTickers(),
+      this.getEventEmitter(),
       parameters.projectDir,
     );
   },
