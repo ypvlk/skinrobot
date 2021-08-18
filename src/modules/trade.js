@@ -75,9 +75,6 @@ module.exports = class Watch {
         const me = this;
         const { eventEmitter } = this;
         const { tickers } = this;
-        const { orders } = this;
-        const { positions } = this;
-        const { balances } = this;
         
         // let the system bootup; eg let the candle be filled by exchanges
         setTimeout(() => {
@@ -113,38 +110,6 @@ module.exports = class Watch {
             
             if (signalEvent.signals && signalEvent.signals.length > 0) {
                 me.signalListener.onSignal(signalEvent.signals);
-            }
-        });
-
-        eventEmitter.on('exchange_balance', function(balance) {
-            balances.set(balance);
-        });
-
-        eventEmitter.on('exchange_order', function(orderEvent) {
-            switch (orderEvent.getAction()) {
-                case 'SAVE':
-                  orders.set(orderEvent); //save at storage
-                    return;
-                case 'DELETE':
-                  orders.del(orderEvent.getExchange(), orderEvent.getSymbol(), orderEvent.getOrder().getStatus()); //delete at storage
-                    return;
-                default:
-                    me.logger.info(`Invalid exchange order event action: ${orderEvent.getAction()}`);
-                    return;
-            }
-        });
-
-        eventEmitter.on('exchange_position', function(positionEvent) {
-            switch (positionEvent.getAction()) {
-                case 'SAVE':
-                    positions.set(positionEvent); //save at storage
-                    return;
-                case 'DELETE':
-                    positions.del(positionEvent.getExchange(), positionEvent.getSymbol())//delete at storage
-                    return;
-                default:
-                    me.logger.info(`Invalid exchange position event action: ${positionEvent.getAction()}`);
-                    return;
             }
         });
 

@@ -99,5 +99,13 @@ module.exports = class Ws {
                 }
             });
         });
+
+        me.eventEmitter.on('summary', function(summaryEvent) {
+            webSocketServer.clients.forEach(client => {
+                if (client.readyState === WebSocket.OPEN) {
+                    client.send(JSON.stringify({'summary': summaryEvent}));
+                }
+            });
+        });
     }
 };

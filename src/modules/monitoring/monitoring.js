@@ -20,6 +20,10 @@ module.exports = class MonitoringService {
         this.instances = instances;
 
 
+        this.balance = 0;
+        // this.balance_with_comm = 0;
+        this.commision_summary = 0; //тут я буду считтаь сколько всего отняла комиссия
+
         this.drawdown = 0;
         this.all_positions = 0;
         this.positive_positions = 0;
@@ -61,6 +65,13 @@ module.exports = class MonitoringService {
             })
         }, 1000 * 5);
 
+        setInterval(() => {
+            me.eventEmitter.emit('summary', {
+                balance: this.balance,
+                balance_with_comm: this.balance - this.commision_summary
+            })
+        }, 1000 * 1);
+
         me.eventEmitter.on('update_all_values', function() {
             me.updateAll();
         });
@@ -77,8 +88,45 @@ module.exports = class MonitoringService {
             }
         });
 
+
+
+        me.eventEmitter.on('exchange_balance', function(balance) {
+            balancesStorage.set(balance);
+            me.balance = balance;
+        });
+
+        me.eventEmitter.on('exchange_order', function(orderEvent) {
+            switch (orderEvent.getAction()) {
+                case 'SAVE':
+                    ordersStorage.set(orderEvent); //save at storage
+                    return;
+                case 'DELETE':
+                    ordersStorage.del(orderEvent.getExchange(), orderEvent.getSymbol(), orderEvent.getOrder().getStatus()); //delete at storage
+                    return;
+                default:
+                    me.logger.info(`Invalid exchange order event action: ${orderEvent.getAction()}`);
+                    return;
+            }
+        });
+
+        eventEmitter.on('exchange_position', function(positionEvent) {
+            switch (positionEvent.getAction()) {
+                case 'SAVE':
+                    positionsStorage.set(positionEvent); //save at storage
+                    return;
+                case 'DELETE':
+                    positionsStorage.del(positionEvent.getExchange(), positionEvent.getSymbol())//delete at storage
+                    return;
+                default:
+                    me.logger.info(`Invalid exchange position event action: ${positionEvent.getAction()}`);
+                    return;
+            }
+        });
+
     }
 
+    //TODO
+    //add save data into db
     updateAll() {
         this.logger.info('Monitoring params was updated.');
 
