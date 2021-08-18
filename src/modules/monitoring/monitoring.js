@@ -23,9 +23,10 @@ module.exports = class MonitoringService {
 
         this.commision = 0;
         this.balance = 0;
+        this.max_drawdown = 0;
         this.commision_summary = 0;
 
-        this.drawdown = 0;
+
         this.all_positions = 0;
         this.all_orders = 0;
         this.positive_positions = 0;
@@ -48,7 +49,9 @@ module.exports = class MonitoringService {
 
         const me = this;
 
-        me.commision = me.instances.symbols.strategy.options.exchange_commission; //TODO
+        me.commision = 0.04; //TODO
+
+        const strategyName = 'mean_reversion';
 
         setInterval(() => {
             me.eventEmitter.emit('indicators', {
@@ -71,10 +74,17 @@ module.exports = class MonitoringService {
 
         setInterval(() => {
             me.eventEmitter.emit('summary', {
-                balance: this.balance,
-                balance_with_comm: this.balance - this.commision_summary
+                balance: this.balance, //Это нужно часто обновлять
+                balance_with_comm: this.balance - this.commision_summary, //Это нужно часто обновлять
+                max_drawdown: this.max_drawdown, //Это нужно часто обновлять
+                all_positions: this.all_positions,
+                all_orders: this.all_orders,
+                positive_positions: this.positive_positions,
+                negative_positions: this.negative_positions
+                // commision: this.commision, //Это не нужно обновлять это константа
+                // strategy_name: strategyName //Это не нужно обновлять это константа
             })
-        }, 1000 * 1);
+        }, 1000 * 4);
 
         me.eventEmitter.on('update_all_values', function() {
             me.updateAll();
@@ -150,7 +160,7 @@ module.exports = class MonitoringService {
         if (balance !== this.balance) {
             this.balance = balance;
 
-            this.drawdown = balance < this.drawdown ? balance : this.drawdown;
+            this.max_drawdown = balance < this.max_drawdown ? balance : this.max_drawdown;
         }
     }
 
@@ -167,7 +177,7 @@ module.exports = class MonitoringService {
         }
     }
 
-    onDeleteEventPositions(positions) {
+    onDeleteEventPositions(positions) {//positions: Array
         if (positions && positions.length) {
             //this.all_positions = this.all_positions + positions.length;
             //и тут нужно посчитать все все пункты по позициям

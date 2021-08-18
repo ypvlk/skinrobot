@@ -3,46 +3,14 @@
 
 <div class="row">
     <div class="col-md-6">
-        <table class="table table-bordered table-sm table-hover backtest-table">
-            <tr>
-                <td>Balance </td>
-                <td class="{{ summary.balance > 0 ? 'text-success' : 'text-danger' }}">
-                    {{summary.balance}} %
-                </td>
-            </tr>
-            <tr>
-                <td>Balance with commision</td>
-                <td class="{{ summary.balance_with_comm > 0 ? 'text-success' : 'text-danger' }}">
-                    {{ summary.balance_with_comm }}
-                </td>
-            </tr>
-            <tr>
-                <td>Drawdown </td>
-                <td class="{{ summary.netProfit > 0 ? 'text-success' : 'text-danger' }}">
-                    {{ summary.drawdown }}
-                </td>
-            </tr>
+        <table id="summary_table_left" class="table table-bordered table-sm table-hover backtest-table">
+            
         </table>
     </div>
 
     <div class="col-md-6">
-        <table class="table table-bordered table-sm table-hover backtest-table">
-            <tr>
-                <td>All Positions </td>
-                <td>{{ summary.all_positions }}</td>
-            </tr>
-            <tr>
-                <td>Positive Positions </td>
-                <td class="text-success">
-                    {{ summary.positive_positions }}
-                </td>
-            </tr>
-            <tr>
-                <td>Nagative Positions </td>
-                <td class="text-danger">
-                    {{ summary.negative_positions }}
-                </td>
-            </tr>
+        <table id="summary_table_right" class="table table-bordered table-sm table-hover backtest-table">
+        
         </table>
     </div>
 </div>

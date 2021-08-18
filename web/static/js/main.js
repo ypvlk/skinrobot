@@ -64,6 +64,10 @@ function webSocketConnect() {
             if (data && data.trades) {
                 onTradesMessage(data.trades);
             }
+
+            if (data && data.summary) {
+                onSummaryMessage(data.summary);
+            }
             
         }
         // ws.send(JSON.stringify({ event: "correlation", payload: { one: 'ONE', two: 'TWO' }}));
@@ -153,4 +157,33 @@ function onIndicatorsMessage(indicators) {
     $('#trade_pause_btn').each(function() {
         $(this).prop('value', trade_status ? 'on' : 'off');
     });
+}
+
+function onSummaryMessage(data) {
+    const {
+        balance,
+        balance_with_comm,
+        max_drawdown,
+        all_positions,
+        all_orders,
+        positive_positions,
+        negative_positions
+    } = data;
+
+    let summary_table_left = '';
+    let summary_table_right = '';
+
+    let tr_balance = `<tr><td>Balance</td><td>${balance}</td></tr>`;
+    let tr_balance_with_comm = `<tr><td>Balance with comm</td><td>${balance_with_comm}</td></tr>`;
+    let tr_max_drawdown = `<tr><td>Drawdown</td><td>${max_drawdown}</td></tr>`;
+    let tr_all_positions = `<tr><td>All positions</td><td>${all_positions}</td></tr>`;
+    let tr_all_orders = `<tr><td>All orders</td><td>${all_orders}</td></tr>`;
+    let tr_positive_positions = `<tr><td>Positive positions</td><td>${positive_positions}</td></tr>`;
+    let tr_negative_positions = `<tr><td>Negative positions</td><td>${negative_positions}</td></tr>`;
+    
+    summary_table_left += tr_balance + tr_balance_with_comm + tr_max_drawdown;
+    summary_table_right += tr_all_positions + tr_all_orders + tr_positive_positions + tr_negative_positions;
+
+    $('#summary_table_left').html(summary_table_left);
+    $('#summary_table_right').html(summary_table_right);
 }
