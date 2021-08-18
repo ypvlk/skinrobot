@@ -9,24 +9,30 @@ $(document).ready(function() {
     $('#trade_pause_btn').click(function(e){
         e.preventDefault();
         
-        const url = 'http://localhost:3000/trade/pause';
-        const method = 'GET';
-        const turn = this.value === 'on' ? 'off' : 'on';
-        const query = `?turn=${turn}`;
-        
-        $.ajax({
-            url : url +query,
-            type: method,
-            // data: $(body).serialize(),
-            success: function (res) {
-                return;
-            },
-            error: function (jXHR, textStatus, errorThrown) {
-                alert(errorThrown);
-            }
+        handleClickTradePause(this.value, function() {
+            //Callback
         });
     });
 });
+
+function handleClickTradePause(value, cb) {
+    const url = 'http://localhost:3000/trade/pause';
+    const method = 'GET';
+    const turn = value === 'on' ? 'off' : 'on';
+    const query = `?turn=${turn}`;
+    
+    $.ajax({
+        url : url +query,
+        type: method,
+        // data: $(body).serialize(),
+        success: function (res) {
+            return cb();
+        },
+        error: function (jXHR, textStatus, errorThrown) {
+            alert(errorThrown);
+        }
+    });
+}
 
 function webSocketConnect() {
     const ws = new WebSocket('ws://localhost:3001');
@@ -64,32 +70,7 @@ function webSocketConnect() {
     }
 };
 
-function onIndicatorsMessage(indicators) {
-    //indicators: Object
-
-    const {
-        http_status, 
-        ws_status, 
-        trade_status
-    } = indicators;
-
-    $('#http_status').each(function() {
-        $(this).css({ color: http_status ? 'green' : 'red' });
-    });
-
-    $('#ws_status').each(function() {
-        $(this).css({ color: ws_status ? 'green' : 'red' });
-    });
-
-    $('#trade_status').each(function() {
-        $(this).css({ color: trade_status ? 'green' : 'red' });
-    })
-
-    $('#trade_pause_btn').each(function() {
-        $(this).prop('value', trade_status ? 'on' : 'off');
-    });
-}
-
+//Handle message on ws
 function onTradesMessage(trades) {
     //trades: Object
 
@@ -145,4 +126,31 @@ function onTradesMessage(trades) {
 
     $('#table-orders-body').html(orders_table_body);
     //<-----Orders End----->//
+}
+
+//Handle message on ws
+function onIndicatorsMessage(indicators) {
+    //indicators: Object
+
+    const {
+        http_status, 
+        ws_status, 
+        trade_status
+    } = indicators;
+
+    $('#http_status').each(function() {
+        $(this).css({ color: http_status ? 'green' : 'red' });
+    });
+
+    $('#ws_status').each(function() {
+        $(this).css({ color: ws_status ? 'green' : 'red' });
+    });
+
+    $('#trade_status').each(function() {
+        $(this).css({ color: trade_status ? 'green' : 'red' });
+    })
+
+    $('#trade_pause_btn').each(function() {
+        $(this).prop('value', trade_status ? 'on' : 'off');
+    });
 }

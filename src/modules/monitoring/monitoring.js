@@ -9,7 +9,6 @@ module.exports = class MonitoringService {
         logger,
         systemUtil,
         instances
-
     ) {
         this.eventEmitter = eventEmitter;
         this.balancesStorage = balancesStorage;

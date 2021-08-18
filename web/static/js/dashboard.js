@@ -7,7 +7,6 @@ $(document).ready(function() {
         
         handlePositionsCloseAll(this.positions);
     });
-
 });
 
 function handlePositionsCloseAll(positions) {
