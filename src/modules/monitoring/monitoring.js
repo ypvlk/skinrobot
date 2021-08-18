@@ -96,7 +96,7 @@ module.exports = class MonitoringService {
 
         me.eventEmitter.on('exchange_balance', function(balance) {
             me.balancesStorage.set(balance);
-            me.balance = balance;
+            me.onEventBalance(balance);
         });
 
         me.eventEmitter.on('exchange_order', function(orderEvent) {
@@ -144,6 +144,14 @@ module.exports = class MonitoringService {
             this.positive_positions = 0,
             this.negative_positions = 0
         )
+    }
+
+    onEventBalance(balance) {
+        if (balance !== this.balance) {
+            this.balance = balance;
+
+            this.drawdown = balance < this.drawdown ? balance : this.drawdown;
+        }
     }
 
     onEventOrders(orders) {//orders: Array
