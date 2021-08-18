@@ -20,12 +20,14 @@ module.exports = class MonitoringService {
         this.instances = instances;
 
 
+
+        this.commision = 0;
         this.balance = 0;
-        // this.balance_with_comm = 0;
-        this.commision_summary = 0; //тут я буду считтаь сколько всего отняла комиссия
+        this.commision_summary = 0;
 
         this.drawdown = 0;
         this.all_positions = 0;
+        this.all_orders = 0;
         this.positive_positions = 0;
         this.negative_positions = 0;
 
@@ -45,6 +47,8 @@ module.exports = class MonitoringService {
         this.logger.debug('Monitoring module started...');
 
         const me = this;
+
+        me.commision = me.instances.symbols.strategy.options.exchange_commission; //TODO
 
         setInterval(() => {
             me.eventEmitter.emit('indicators', {
@@ -91,17 +95,19 @@ module.exports = class MonitoringService {
 
 
         me.eventEmitter.on('exchange_balance', function(balance) {
-            balancesStorage.set(balance);
+            me.balancesStorage.set(balance);
             me.balance = balance;
         });
 
         me.eventEmitter.on('exchange_order', function(orderEvent) {
             switch (orderEvent.getAction()) {
                 case 'SAVE':
-                    ordersStorage.set(orderEvent); //save at storage
+                    me.ordersStorage.set(orderEvent); //save at storage
+                    me.onEventOrders(orderEvent.getOrder());
                     return;
                 case 'DELETE':
-                    ordersStorage.del(orderEvent.getExchange(), orderEvent.getSymbol(), orderEvent.getOrder().getStatus()); //delete at storage
+                    me.ordersStorage.del(orderEvent.getExchange(), orderEvent.getSymbol(), orderEvent.getOrder().getStatus()); //delete at storage
+                    me.onEventOrders(orderEvent.getOrder());
                     return;
                 default:
                     me.logger.info(`Invalid exchange order event action: ${orderEvent.getAction()}`);
@@ -109,13 +115,15 @@ module.exports = class MonitoringService {
             }
         });
 
-        eventEmitter.on('exchange_position', function(positionEvent) {
+        me.eventEmitter.on('exchange_position', function(positionEvent) {
             switch (positionEvent.getAction()) {
                 case 'SAVE':
-                    positionsStorage.set(positionEvent); //save at storage
+                    me.positionsStorage.set(positionEvent); //save at storage
+                    me.onSaveEventPositions(positionEvent.getPosition());
                     return;
                 case 'DELETE':
-                    positionsStorage.del(positionEvent.getExchange(), positionEvent.getSymbol())//delete at storage
+                    me.positionsStorage.del(positionEvent.getExchange(), positionEvent.getSymbol())//delete at storage
+                    me.onDeleteEventPositions(positionEvent.getPosition());
                     return;
                 default:
                     me.logger.info(`Invalid exchange position event action: ${positionEvent.getAction()}`);
@@ -136,5 +144,27 @@ module.exports = class MonitoringService {
             this.positive_positions = 0,
             this.negative_positions = 0
         )
+    }
+
+    onEventOrders(orders) {//orders: Array
+        if (orders && orders.length) {
+            this.all_orders = this.all_orders + orders.length;
+        }
+    }
+
+    onSaveEventPositions(positions) {//positions: Array
+        if (positions && positions.length > 0) {
+            this.all_positions = this.all_positions + positions.length;
+            this.commision_summary = this.commision_summary + (this.commision * positions.length);
+        }
+    }
+
+    onDeleteEventPositions(positions) {
+        if (positions && positions.length) {
+            //this.all_positions = this.all_positions + positions.length;
+            //и тут нужно посчитать все все пункты по позициям
+
+            this.commision_summary = this.commision_summary + (this.commision * positions.length);
+        }
     }
 }

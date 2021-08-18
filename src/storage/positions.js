@@ -5,7 +5,6 @@ module.exports = class Positions {
     }
 
     set(position) {
-        console.log('Position', position.position);
         this.positions[`${position.exchange}.${position.symbol}`] = position.position;
     }
 
