@@ -61,6 +61,10 @@ module.exports = class MonitoringService {
             })
         }, 1000 * 5);
 
+        me.eventEmitter.on('update_all_values', function() {
+            me.updateAll();
+        });
+
         me.eventEmitter.on('ws_status', function(statusEvent) {
             if (statusEvent.status !== me.ws_status) {
                 me.ws_status = statusEvent.status;
@@ -73,5 +77,16 @@ module.exports = class MonitoringService {
             }
         });
 
+    }
+
+    updateAll() {
+        this.logger.info('Monitoring params was updated.');
+
+        return (
+            this.drawdown = 0,
+            this.all_positions = 0,
+            this.positive_positions = 0,
+            this.negative_positions = 0
+        )
     }
 }

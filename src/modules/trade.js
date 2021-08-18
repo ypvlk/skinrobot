@@ -176,6 +176,9 @@ module.exports = class Watch {
             !me.pause
         ) {
             me.updatePause(true);
+
+            //Call event update data into monitoring
+            me.eventEmitter.emit('update_all_values', {});
             
             setTimeout(() => { 
                 me.updatePause(false);
