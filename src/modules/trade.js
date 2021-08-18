@@ -94,7 +94,7 @@ module.exports = class Watch {
 
         setInterval(async () => {
             await me.logsRepository.cleanOldLogEntries();
-            await me.tickerRepository.cleanOldLogEntries();
+            // await me.tickerRepository.cleanOldLogEntries();
 
             me.logger.debug('Logs: Cleanup old entries');
         }, 86455000 * 2); //3 day
