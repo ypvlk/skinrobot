@@ -172,7 +172,8 @@ module.exports = {
           new WinstonSqliteTransport({
             level: 'debug',
             database_connection: this.getDatabase(),
-            table: 'logs'
+            table: 'logs',
+            eventEmitter: this.getEventEmitter()
           })
       ]
     }));

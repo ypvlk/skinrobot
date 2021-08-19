@@ -14,6 +14,7 @@ module.exports = class WinstonSqliteTransport extends Transport {
 
         this.db = opts.database_connection;
         this.table = opts.table;
+        this.eventEmitter = opts.eventEmitter;
     }
 
     log(info, callback) {
@@ -33,6 +34,8 @@ module.exports = class WinstonSqliteTransport extends Transport {
                 `INSERT INTO ${this.table}(uuid, level, message, created_at) VALUES ($uuid, $level, $message, $created_at)`
             )
             .run(parameters);
+
+            this.eventEmitter.emit('winston_log', parameters);
 
             callback();
     }

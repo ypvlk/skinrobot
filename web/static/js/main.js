@@ -68,6 +68,10 @@ function webSocketConnect() {
             if (data && data.summary) {
                 onSummaryMessage(data.summary);
             }
+
+            if (data && data.log) {
+                onLogMessage(data.log);
+            }
             
         }
         // ws.send(JSON.stringify({ event: "correlation", payload: { one: 'ONE', two: 'TWO' }}));
@@ -186,4 +190,17 @@ function onSummaryMessage(data) {
 
     $('#summary_table_left').html(summary_table_left);
     $('#summary_table_right').html(summary_table_right);
+}
+
+function onLogMessage(log) {
+    const {
+        uuid,
+        level,
+        message,
+        created_at,
+    } = log;
+
+    const p = `<p>id: ${uuid} level: ${level} message: ${message} created_at: ${created_at}</p>`;
+
+    $('#logs_body').append(p);
 }

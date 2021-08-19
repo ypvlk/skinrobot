@@ -84,6 +84,14 @@ module.exports = class Ws {
         me.logger.info(`WebSocket listening on: ${host}:${port}`);
         console.log(`WebSocket listening on: ${host}:${port}`);
 
+        me.eventEmitter.on('winston_log', function(logEvent) {
+            webSocketServer.clients.forEach(client => {
+                if (client.readyState === WebSocket.OPEN) {
+                    client.send(JSON.stringify({'log': logEvent}));
+                }
+            });
+        });
+
         me.eventEmitter.on('indicators', function(indicatorsEvent) {
             webSocketServer.clients.forEach(client => {
                 if (client.readyState === WebSocket.OPEN) {

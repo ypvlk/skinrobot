@@ -84,7 +84,7 @@ module.exports = class MonitoringService {
                 // commision: this.commision, //Это не нужно обновлять это константа
                 // strategy_name: strategyName //Это не нужно обновлять это константа
             })
-        }, 1000 * 4);
+        }, 1000 * 6);
 
         me.eventEmitter.on('update_all_values', function() {
             me.updateAll();
@@ -140,7 +140,6 @@ module.exports = class MonitoringService {
                     return;
             }
         });
-
     }
 
     //TODO
