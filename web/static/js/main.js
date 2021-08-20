@@ -35,7 +35,7 @@ function handleClickTradePause(value, cb) {
 }
 
 function webSocketConnect() {
-    const ws = new WebSocket('ws://http://206.189.96.37:3001');
+    const ws = new WebSocket('ws://206.189.96.37:3001');
 
     ws.onopen = () => {
         // ws.send(JSON.stringify({ event: "correlation", payload: { one: 'ONE', two: 'TWO' }}));
