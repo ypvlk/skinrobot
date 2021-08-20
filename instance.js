@@ -107,11 +107,11 @@ m.forEach((pair) => {
     })
 });
 
-let m = [
+let n = [
     'BTCUSDT'
 ]
 
-m.forEach((pair) => {
+n.forEach((pair) => {
     c.symbols.push({
         'symbol': pair,
         'periods': ['1m'],
@@ -143,11 +143,11 @@ m.forEach((pair) => {
     })
 });
 
-let m = [
+let p = [
     'ETHUSDT'
 ]
 
-m.forEach((pair) => {
+p.forEach((pair) => {
     c.symbols.push({
         'symbol': pair,
         'periods': ['1m'],
