@@ -105,7 +105,7 @@ module.exports = class Watch {
         });
 
         eventEmitter.on('tick_signal', async function(signalEvent) {
-            // await me.strategyDatabaseListener.saveData(signalEvent); //save strategy data at db 
+            await me.strategyDatabaseListener.saveData(signalEvent); //save strategy data at db 
             // await me.signalDatabaseListener.saveSignal(signalEvent); //save signal at db
             
             if (signalEvent.signals && signalEvent.signals.length > 0) {

@@ -165,7 +165,7 @@ module.exports = class BinanceFutures {
 
         return (Number(result[0][4]));
     }
-    //TODO
+    
     async saveCloses(symbols) {
         const date = new Date();
         const time = date / 1 - 86400000; //close yesterday
@@ -182,10 +182,8 @@ module.exports = class BinanceFutures {
 
             for (const symbol of symbols) {
                 this.closes[`${symbol.symbol}`] = await me.getCloses(symbol.symbol, period, time);
-                console.log('Итерация в цикле. Должно быть две подряд и первее чем ниже текст'); //TODO
             }
 
-            console.log('обновляем флаг'); //TODO
             me.closesWasUpdate = true;
 
             me.throttler.addTask('binance_futures_closes_was_update', async () => {

@@ -21,9 +21,9 @@ module.exports = class StrategyDatabaseListener {
             this.saveTestingData(data);
         // }
         
-        // const strategy_repository = this.getRepository(strategy);
+        const strategy_repository = this.getRepository(strategy);
 
-        // await strategy_repository.insertData(data);
+        return strategy_repository.insertData(data);
     }
 
     getRepository(name) {
