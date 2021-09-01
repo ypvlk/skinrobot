@@ -3,7 +3,7 @@
         {
         "name"        : "skinrobot-worker",
         "script"      : "./main.js",
-        "args"        : "watch",
+        "args"        : "trade",
         "exec_mode"   : "cluster",
         "interpreter_args": "--max-old-space-size=512", 
         "instances" : 1,
