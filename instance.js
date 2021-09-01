@@ -2,59 +2,24 @@ var c = module.exports = {}
 
 c.symbols = [];
 
-// let l = [
-//     'LTCUSDT'
-// ]
-
-// l.forEach((pair) => {
-//     c.symbols.push({
-//         'symbol': pair,
-//         'periods': ['1m'],
-//         'exchange': 'binance_futures',
-//         'watch': {},
-//         'trade': {},
-//         'strategy': {
-//             'name': 'mean_reversion',
-//             'options': {
-//                 'driven': 'LTCUSDT', //driven - это означает что это ведомый стак
-//                 'correction_indicator_changes': 0.1, //% - значения отклонения новой разницы процентов от старой
-//                 'exchange_commission': 0.04,
-//                 'get_position_change_tier_1': 0.19, //%
-//                 'get_position_change_tier_2': 0.6, //%
-//                 'get_position_change_tier_3': 0.8, //%
-//                 'stop_lose_position_change': 1.2, //%
-//                 'take_profit_position_change': 0.05, //%
-//                 'hand_delta': 0,
-//                 'tiers': [
-//                     33, //USDT (Asset)
-//                     33,
-//                     33 
-//                 ],
-//                 'ban_trading_time': 30000//in mill
-//             }
-//         }
-//     })
-// });
-
-//binance_futures
-let k = [
-    'BTCBUSD' 
+let l = [
+    'LTCUSDT'
 ]
 
-k.forEach((pair) => {
+l.forEach((pair) => {
     c.symbols.push({
         'symbol': pair,
         'periods': ['1m'],
         'exchange': 'binance_futures',
-        'state': 'watch',
-        'is_test': false,
+        'watch': {},
+        'trade': {},
         'strategy': {
             'name': 'mean_reversion',
             'options': {
-                'lead': 'BTCBUSD', //lead - означает что этот стак ведущий
-                'correction_indicator_changes': 0.20,
-                'exchange_commission': 0.04,
-                'get_position_change_tier_1': 0.43, //%
+                'driven': 'LTCUSDT', //driven - это означает что это ведомый стак
+                'correction_indicator_changes': 0.2, //% - значения отклонения новой разницы процентов от старой
+                'exchange_commission': 0.08,
+                'get_position_change_tier_1': 0.55, //%
                 'get_position_change_tier_2': 0.6, //%
                 'get_position_change_tier_3': 0.8, //%
                 'stop_lose_position_change': 1.2, //%
@@ -69,13 +34,84 @@ k.forEach((pair) => {
             }
         }
     })
-})
+});
 
-let m = [
-    'ETHBUSD'
+//binance_futures
+// let k = [
+//     'BTCBUSD' 
+// ]
+
+// k.forEach((pair) => {
+//     c.symbols.push({
+//         'symbol': pair,
+//         'periods': ['1m'],
+//         'exchange': 'binance_futures',
+//         'state': 'watch',
+//         'is_test': false,
+//         'strategy': {
+//             'name': 'mean_reversion',
+//             'options': {
+//                 'lead': 'BTCBUSD', //lead - означает что этот стак ведущий
+//                 'correction_indicator_changes': 0.20,
+//                 'exchange_commission': 0.08,
+//                 'get_position_change_tier_1': 0.43, //%
+//                 'get_position_change_tier_2': 0.6, //%
+//                 'get_position_change_tier_3': 0.8, //%
+//                 'stop_lose_position_change': 1.2, //%
+//                 'take_profit_position_change': 0.055, //%
+//                 'hand_delta': 0,
+//                 'tiers': [
+//                     50, //USDT (Asset)
+//                     33,
+//                     33 
+//                 ],
+//                 'ban_trading_time': 30000//in mill
+//             }
+//         }
+//     })
+// })
+
+// let m = [
+//     'ETHBUSD'
+// ]
+
+// m.forEach((pair) => {
+//     c.symbols.push({
+//         'symbol': pair,
+//         'periods': ['1m'],
+//         'exchange': 'binance_futures',
+//         'is_test': false,
+//         'watch': {},
+//         'trade': {},
+//         'strategy': {
+//             'name': 'mean_reversion',
+//             'options': {
+//                 'driven': 'ETHBUSD', //driven - это означает что это ведомый стак
+//                 'correction_indicator_changes': 0.20, //% - значения отклонения новой разницы процентов от старой
+//                 'exchange_commission': 0.08,
+//                 'get_position_change_tier_1': 0.43, //%
+//                 'get_position_change_tier_2': 0.6, //%
+//                 'get_position_change_tier_3': 0.8, //%
+//                 'stop_lose_position_change': 1.2, //%
+//                 'take_profit_position_change': 0.055, //%
+//                 'hand_delta': 0,
+//                 'tiers': [
+//                     50, //USDT (Asset)
+//                     33,
+//                     33 
+//                 ],
+//                 'ban_trading_time': 30000,//in mill
+                
+//             }
+//         }
+//     })
+// });
+
+let n = [
+    'BTCUSDT'
 ]
 
-m.forEach((pair) => {
+n.forEach((pair) => {
     c.symbols.push({
         'symbol': pair,
         'periods': ['1m'],
@@ -86,10 +122,10 @@ m.forEach((pair) => {
         'strategy': {
             'name': 'mean_reversion',
             'options': {
-                'driven': 'ETHBUSD', //driven - это означает что это ведомый стак
-                'correction_indicator_changes': 0.20, //% - значения отклонения новой разницы процентов от старой
-                'exchange_commission': 0.04,
-                'get_position_change_tier_1': 0.10, //%
+                'lead': 'BTCUSDT', //driven - это означает что это ведомый стак
+                'correction_indicator_changes': 0.2, //% - значения отклонения новой разницы процентов от старой
+                'exchange_commission': 0.08,
+                'get_position_change_tier_1': 0.55, //%
                 'get_position_change_tier_2': 0.6, //%
                 'get_position_change_tier_3': 0.8, //%
                 'stop_lose_position_change': 1.2, //%
@@ -106,42 +142,6 @@ m.forEach((pair) => {
         }
     })
 });
-
-// let n = [
-//     'BTCUSDT'
-// ]
-
-// n.forEach((pair) => {
-//     c.symbols.push({
-//         'symbol': pair,
-//         'periods': ['1m'],
-//         'exchange': 'binance_futures',
-//         'is_test': false,
-//         'watch': {},
-//         'trade': {},
-//         'strategy': {
-//             'name': 'mean_reversion',
-//             'options': {
-//                 'driven': 'BTCUSDT', //driven - это означает что это ведомый стак
-//                 'correction_indicator_changes': 0.20, //% - значения отклонения новой разницы процентов от старой
-//                 'exchange_commission': 0.04,
-//                 'get_position_change_tier_1': 0.10, //%
-//                 'get_position_change_tier_2': 0.6, //%
-//                 'get_position_change_tier_3': 0.8, //%
-//                 'stop_lose_position_change': 1.2, //%
-//                 'take_profit_position_change': 0.05, //%
-//                 'hand_delta': 0,
-//                 'tiers': [
-//                     33, //USDT (Asset)
-//                     33,
-//                     33 
-//                 ],
-//                 'ban_trading_time': 30000,//in mill
-                
-//             }
-//         }
-//     })
-// });
 
 // let p = [
 //     'ETHUSDT'

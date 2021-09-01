@@ -40,8 +40,12 @@ module.exports = class MeanReversionRepository {
         });
     }
 
-    getData(leadExchange, leadSymbol, drivenExchange, drivenSymbol, limit = 30000) {
+    getData(leadExchange, leadSymbol, drivenExchange, drivenSymbol, startTime, endTime, limit = 30000) {
         return new Promise(resolve => {
+            //TODO
+            //add logic with time
+
+
             const stmt = this.db.prepare(
                 'SELECT * FROM mean_reversion WHERE (lead_exchange = ? AND lead_symbol = ?) AND (driven_exchange = ? AND driven_symbol = ?) LIMIT ?'
             );

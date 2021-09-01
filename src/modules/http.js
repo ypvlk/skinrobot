@@ -342,6 +342,8 @@ module.exports = class Http {
             res.status(200).end(result);
         });
 
+        //TODO
+        //add time into flow
         app.get('/changes/download', async (req, res) => {
             //localhost:3000/changes/download?lead=binance_futures.BTCUSDT&driven=binance_futures.LTCUSDT
             const {
