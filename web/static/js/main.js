@@ -155,7 +155,7 @@ function onIndicatorsMessage(indicators) {
     });
 
     $('#trade_status').each(function() {
-        $(this).css({ color: trade_status ? 'green' : 'red' });
+        $(this).css({ color: trade_status ? 'red' : 'green' });
     })
 
     $('#trade_pause_btn').each(function() {
